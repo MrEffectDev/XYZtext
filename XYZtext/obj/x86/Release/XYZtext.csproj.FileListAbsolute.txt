@@ -1,8 +1,0 @@
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\bin\Release\xytext.exe
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\bin\Release\xytext.pdb
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\obj\x86\Release\xyzext.Form1.resources
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\obj\x86\Release\xytext.Properties.Resources.resources
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\obj\x86\Release\XYZtext.csproj.GenerateResource.cache
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\obj\x86\Release\XYZtext.csproj.CoreCompileInputs.cache
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\obj\x86\Release\xytext.exe
-C:\Users\artem\OneDrive\Рабочий стол\XYZtext\XYZtext\obj\x86\Release\xytext.pdb

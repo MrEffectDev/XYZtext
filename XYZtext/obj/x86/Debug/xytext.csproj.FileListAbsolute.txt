@@ -1,9 +1,0 @@
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\obj\x86\Debug\xytext.csproj.AssemblyReference.cache
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\obj\x86\Debug\xytext.Properties.Resources.resources
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\obj\x86\Debug\xytext.csproj.GenerateResource.cache
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\obj\x86\Debug\xytext.csproj.CoreCompileInputs.cache
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\bin\Debug\xytext.exe
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\bin\Debug\xytext.pdb
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\obj\x86\Debug\xytext.exe
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\obj\x86\Debug\xytext.pdb
-C:\Users\artem\OneDrive\Рабочий стол\xytext\xytext\obj\x86\Debug\xyzext.Form1.resources

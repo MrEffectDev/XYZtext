@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace xyzext
 {
@@ -15,7 +15,7 @@ namespace xyzext
             this.DragDrop += new DragEventHandler(file_DragDrop);
             InitializeComponent();
 
-            setStringsTextBox(new string[] { "Загрузите папку с текстовыми файлами.", "Затем будут отображены текстовые строки.", "Используйте ComboBox / выпадающее меню, чтобы выбрать, какую запись отобразить."});
+            setStringsTextBox(new string[] { "Загрузите папку с текстовыми файлами.", "Затем будут отображены текстовые строки.", "Используйте ComboBox / выпадающее меню, чтобы выбрать, какую запись отобразить." });
         }
         public string[] files;
         // IO
@@ -44,8 +44,8 @@ namespace xyzext
                                 if (data != null)
                                     foreach (string line in data)
                                     {
-                                        if (newline) 
-                                            tw.WriteLine(line.Replace("\\n\\n"," ").Replace("\\n", " ").Replace("\\c", "").Replace("\\r", "")); // Strip out formatting
+                                        if (newline)
+                                            tw.WriteLine(line.Replace("\\n\\n", " ").Replace("\\n", " ").Replace("\\c", "").Replace("\\r", "")); // Strip out formatting
                                         else
                                             tw.WriteLine(line);
                                     }
@@ -139,11 +139,11 @@ namespace xyzext
 
             try // Some sanity checking to prevent errors.
             {
-            if (initialKey != 0) throw new Exception("Неверный начальный ключ! Не 0?");
-            if (sectionData + totalLength != data.Length || textSections != 1) throw new Exception("Недопустимый текстовый файл");
+                if (initialKey != 0) throw new Exception("Неверный начальный ключ! Не 0?");
+                if (sectionData + totalLength != data.Length || textSections != 1) throw new Exception("Недопустимый текстовый файл");
 
-            uint sectionLength = BitConverter.ToUInt32(data, sectionData);
-            if (sectionLength != totalLength) throw new Exception("Размер секции и общий размер не совпадают.");
+                uint sectionLength = BitConverter.ToUInt32(data, sectionData);
+                if (sectionLength != totalLength) throw new Exception("Размер секции и общий размер не совпадают.");
             }
             catch { return null; };
 
@@ -267,7 +267,7 @@ namespace xyzext
         }
         private ushort decryptU16(byte[] data, ref int offset, ref ushort val, ref ushort key)
         {
-            val = (ushort)(BitConverter.ToUInt16(data, offset) ^ key); 
+            val = (ushort)(BitConverter.ToUInt16(data, offset) ^ key);
             offset += 2;
             key = (ushort)(((key << 3) | (key >> 13)) & 0xffff);
             return val;
@@ -353,16 +353,16 @@ namespace xyzext
                 else if (line[i + 1] == 'r')
                 {
                     bw.Write(encryptU16(0x10, ref key)); i++;
-                    bw.Write(encryptU16(1, ref key)); 
-                    bw.Write(encryptU16(0xBE00, ref key)); 
+                    bw.Write(encryptU16(1, ref key));
+                    bw.Write(encryptU16(0xBE00, ref key));
                 }
                 else if (line[i + 1] == 'c')
                 {
                     bw.Write(encryptU16(0x10, ref key)); i++;
-                    bw.Write(encryptU16(1, ref key)); 
-                    bw.Write(encryptU16(0xBE01, ref key)); 
+                    bw.Write(encryptU16(1, ref key));
+                    bw.Write(encryptU16(0xBE01, ref key));
                 }
-                else { throw new Exception("Недопустимая завершенная строка"); }
+                else { throw new Exception($"Недопустимая завершенная строка! На строке:\n{line}"); }
             else if (val == '[')    // Special Variable
             {
                 int bracket = line.Substring(i + 1).IndexOf(']');
@@ -493,7 +493,7 @@ namespace xyzext
                             case 0x0206: tvname = "NUM7"; break;
                             case 0x0207: tvname = "NUM8"; break;
                             case 0x0208: tvname = "NUM9"; break;
-                            default: tvname = varCode.ToString("X4");  break;
+                            default: tvname = varCode.ToString("X4"); break;
                         }
                         s += "[VAR" + " " + tvname;
                         if (length > 1)
@@ -509,7 +509,7 @@ namespace xyzext
                                 s += ",";
                             }
                             s += ')';
-                        }                        
+                        }
                         s += "]";
                         break;
                     }
@@ -540,6 +540,67 @@ namespace xyzext
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка при открытии браузера: {ex.Message}", "Ошибка");
+            }
+        }
+
+        private void SplitTextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RTB_Text.SelectionLength > 0)
+            {
+                RTB_Text.SelectedText = SplitText(RTB_Text.SelectedText, 50);
+            }
+            else
+            {
+                MessageBox.Show("Нужно выделить текст, который вы хотите разделить. Затем программа автоматически разделит текст по длине одного предложения в диалоговом окне.");
+            }
+        }
+        private string SplitText(string text, int maxCharInSentence)
+        {
+            if (text.Length <= maxCharInSentence) return text;
+
+            string output = "";
+            List<int> spaces = FindSpaceIndexes(text);
+            int charCount = 0;
+            for (int i = 0; i < text.Length; i++)
+            {
+                for (int j = 0; j < spaces.Count; j++)
+                {
+                    if (i == spaces[j] && charCount >= maxCharInSentence)
+                    {
+                        output += "\\n";
+                        charCount = 0;
+                    }
+                }
+                output += text[i];
+                charCount++;
+            }
+
+            return output;
+        }
+        private List<int> FindSpaceIndexes(string input)
+        {
+            List<int> spaceIndexes = new List<int>();
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (input[i] == ' ')
+                {
+                    spaceIndexes.Add(i);
+                }
+            }
+
+            return spaceIndexes;
+        }
+
+        private void RemoveTextSplitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RTB_Text.SelectionLength > 0)
+            {
+                RTB_Text.SelectedText = RTB_Text.SelectedText.Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ");
+            }
+            else
+            {
+                MessageBox.Show("Нужно выделить текст, в котором вы хотите убрать разделения текст. Затем программа автоматически уберет их.");
             }
         }
     }

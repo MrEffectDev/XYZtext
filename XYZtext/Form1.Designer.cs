@@ -34,13 +34,15 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_openFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_Tools = new System.Windows.Forms.ToolStripMenuItem();
-            this.menu_DumpTXT = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vKTextMeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.B_AddLine = new System.Windows.Forms.Button();
             this.B_RemoveLine = new System.Windows.Forms.Button();
             this.RTB_Text = new System.Windows.Forms.RichTextBox();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.vKTextMeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SplitTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RemoveTextSplitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_DumpTXT = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,18 +99,28 @@
             // menu_Tools
             // 
             this.menu_Tools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menu_DumpTXT});
+            this.menu_DumpTXT,
+            this.SplitTextToolStripMenuItem,
+            this.RemoveTextSplitToolStripMenuItem});
             this.menu_Tools.Enabled = false;
             this.menu_Tools.Name = "menu_Tools";
             this.menu_Tools.Size = new System.Drawing.Size(95, 19);
             this.menu_Tools.Text = "Инструменты";
             // 
-            // menu_DumpTXT
+            // helpToolStripMenuItem
             // 
-            this.menu_DumpTXT.Name = "menu_DumpTXT";
-            this.menu_DumpTXT.Size = new System.Drawing.Size(143, 22);
-            this.menu_DumpTXT.Text = "Dump to TXT";
-            this.menu_DumpTXT.Click += new System.EventHandler(this.dumpTXT_Click);
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.vKTextMeToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(68, 19);
+            this.helpToolStripMenuItem.Text = "Помощь";
+            // 
+            // vKTextMeToolStripMenuItem
+            // 
+            this.vKTextMeToolStripMenuItem.Name = "vKTextMeToolStripMenuItem";
+            this.vKTextMeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.vKTextMeToolStripMenuItem.Text = "VK";
+            this.vKTextMeToolStripMenuItem.Click += new System.EventHandler(this.vKTextMeToolStripMenuItem_Click);
             // 
             // CB_Entry
             // 
@@ -147,26 +159,33 @@
             this.RTB_Text.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RTB_Text.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RTB_Text.Location = new System.Drawing.Point(0, 56);
             this.RTB_Text.Name = "RTB_Text";
             this.RTB_Text.Size = new System.Drawing.Size(634, 306);
             this.RTB_Text.TabIndex = 9;
             this.RTB_Text.Text = "";
             // 
-            // helpToolStripMenuItem
+            // SplitTextToolStripMenuItem
             // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.vKTextMeToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(68, 19);
-            this.helpToolStripMenuItem.Text = "Помощь";
+            this.SplitTextToolStripMenuItem.Name = "SplitTextToolStripMenuItem";
+            this.SplitTextToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.SplitTextToolStripMenuItem.Text = "Автоматически разделить текст";
+            this.SplitTextToolStripMenuItem.Click += new System.EventHandler(this.SplitTextToolStripMenuItem_Click);
             // 
-            // vKTextMeToolStripMenuItem
+            // RemoveTextSplitToolStripMenuItem
             // 
-            this.vKTextMeToolStripMenuItem.Name = "vKTextMeToolStripMenuItem";
-            this.vKTextMeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.vKTextMeToolStripMenuItem.Text = "VK";
-            this.vKTextMeToolStripMenuItem.Click += new System.EventHandler(this.vKTextMeToolStripMenuItem_Click);
+            this.RemoveTextSplitToolStripMenuItem.Name = "RemoveTextSplitToolStripMenuItem";
+            this.RemoveTextSplitToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.RemoveTextSplitToolStripMenuItem.Text = "Убрать разделение текста";
+            this.RemoveTextSplitToolStripMenuItem.Click += new System.EventHandler(this.RemoveTextSplitToolStripMenuItem_Click);
+            // 
+            // menu_DumpTXT
+            // 
+            this.menu_DumpTXT.Name = "menu_DumpTXT";
+            this.menu_DumpTXT.Size = new System.Drawing.Size(248, 22);
+            this.menu_DumpTXT.Text = "Dump to TXT";
+            this.menu_DumpTXT.Click += new System.EventHandler(this.dumpTXT_Click);
             // 
             // Form1
             // 
@@ -201,13 +220,15 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem menu_openFolder;
         private System.Windows.Forms.ToolStripMenuItem menu_Tools;
-        private System.Windows.Forms.ToolStripMenuItem menu_DumpTXT;
         private System.Windows.Forms.ComboBox CB_Entry;
         private System.Windows.Forms.Button B_AddLine;
         private System.Windows.Forms.Button B_RemoveLine;
         private System.Windows.Forms.RichTextBox RTB_Text;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem vKTextMeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SplitTextToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RemoveTextSplitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menu_DumpTXT;
     }
 }
 
