@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace xyzext
@@ -14,7 +15,7 @@ namespace xyzext
             this.DragEnter += new DragEventHandler(file_DragEnter);
             this.DragDrop += new DragEventHandler(file_DragDrop);
             InitializeComponent();
-
+            SetCurrentFileNameInApp(this, "Null");
             setStringsTextBox(new string[] { "Загрузите папку с текстовыми файлами.", "Затем будут отображены текстовые строки.", "Используйте ComboBox / выпадающее меню, чтобы выбрать, какую запись отобразить." });
         }
         public string[] files;
@@ -70,6 +71,7 @@ namespace xyzext
         {
             string file = files[CB_Entry.SelectedIndex];
             string[] data = getStringsFromFile(file);
+            SetCurrentFileNameInApp(this, Path.GetFileName(files[CB_Entry.SelectedIndex]));
             setStringsTextBox(data);
         }
         private void B_SaveText_Click(object sender, EventArgs e)
@@ -100,7 +102,6 @@ namespace xyzext
             // Enable Text Line Editing Interface
             CB_Entry.Enabled = true;
             B_SaveText.Enabled = true;
-            B_AddLine.Enabled = B_RemoveLine.Enabled = true;
             CB_Entry.SelectedIndex = 0;
 
             // Enable Dumping All Text
@@ -579,6 +580,7 @@ namespace xyzext
         }
         private List<int> FindSpaceIndexes(string input)
         {
+            input = Regex.Replace(input, @"\[.*?\]", "");
             List<int> spaceIndexes = new List<int>();
 
             for (int i = 0; i < input.Length; i++)
@@ -596,12 +598,16 @@ namespace xyzext
         {
             if (RTB_Text.SelectionLength > 0)
             {
-                RTB_Text.SelectedText = RTB_Text.SelectedText.Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ");
+                RTB_Text.SelectedText = RTB_Text.SelectedText.Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ").Replace("  ", " ");//Удаляет все спец символы и лишние пробелы
             }
             else
             {
                 MessageBox.Show("Нужно выделить текст, в котором вы хотите убрать разделения текст. Затем программа автоматически уберет их.");
             }
+        }
+        private void SetCurrentFileNameInApp(Form form, string newName)
+        {
+            form.Text = $"XYZtext - текущий файл: {newName}";
         }
     }
 }
