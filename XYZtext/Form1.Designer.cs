@@ -39,6 +39,10 @@
             this.RemoveTextSplitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vKTextMeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.themeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.whiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.RTB_Text = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
@@ -71,7 +75,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.menu_Tools,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -141,6 +146,37 @@
             this.vKTextMeToolStripMenuItem.Text = "VK";
             this.vKTextMeToolStripMenuItem.Click += new System.EventHandler(this.vKTextMeToolStripMenuItem_Click);
             // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.themeToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(79, 19);
+            this.settingsToolStripMenuItem.Text = "Настройки";
+            // 
+            // themeToolStripMenuItem
+            // 
+            this.themeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.darkToolStripMenuItem,
+            this.whiteToolStripMenuItem});
+            this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.themeToolStripMenuItem.Text = "Тема";
+            // 
+            // darkToolStripMenuItem
+            // 
+            this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
+            this.darkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.darkToolStripMenuItem.Text = "Темная";
+            this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
+            // 
+            // whiteToolStripMenuItem
+            // 
+            this.whiteToolStripMenuItem.Name = "whiteToolStripMenuItem";
+            this.whiteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.whiteToolStripMenuItem.Text = "Светлая";
+            this.whiteToolStripMenuItem.Click += new System.EventHandler(this.whiteToolStripMenuItem_Click);
+            // 
             // CB_Entry
             // 
             this.CB_Entry.Enabled = false;
@@ -188,19 +224,23 @@
 
         #endregion
 
-        private System.Windows.Forms.Button B_SaveText;
-        private System.Windows.Forms.TextBox TB_Path;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem menu_openFolder;
-        private System.Windows.Forms.ToolStripMenuItem menu_Tools;
-        private System.Windows.Forms.ComboBox CB_Entry;
-        private System.Windows.Forms.RichTextBox RTB_Text;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem vKTextMeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem SplitTextToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem RemoveTextSplitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem menu_DumpTXT;
+        public System.Windows.Forms.Button B_SaveText;
+        public System.Windows.Forms.TextBox TB_Path;
+        public System.Windows.Forms.MenuStrip menuStrip1;
+        public System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem menu_openFolder;
+        public System.Windows.Forms.ToolStripMenuItem menu_Tools;
+        public System.Windows.Forms.ComboBox CB_Entry;
+        public System.Windows.Forms.RichTextBox RTB_Text;
+        public System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem vKTextMeToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem SplitTextToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem RemoveTextSplitToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem menu_DumpTXT;
+        public System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem themeToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem darkToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem whiteToolStripMenuItem;
     }
 }
 

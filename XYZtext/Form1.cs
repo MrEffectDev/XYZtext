@@ -5,16 +5,21 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using xyztext;
 
 namespace xyzext
 {
     public partial class Form1 : Form
     {
+        private string themeFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XYZtext", "theme.txt");
+        private ThemeManager themeManager;
         public Form1()
         {
             this.DragEnter += new DragEventHandler(file_DragEnter);
             this.DragDrop += new DragEventHandler(file_DragDrop);
             InitializeComponent();
+            themeManager = new ThemeManager();
+            SetTheme();
             SetCurrentFileNameInApp(this, "Null");
             setStringsTextBox(new string[] { "Загрузите папку с текстовыми файлами.", "Затем будут отображены текстовые строки.", "Используйте ComboBox / выпадающее меню, чтобы выбрать, какую запись отобразить." });
         }
@@ -608,6 +613,46 @@ namespace xyzext
         private void SetCurrentFileNameInApp(Form form, string newName)
         {
             form.Text = $"XYZtext - текущий файл: {newName}";
+        }
+
+        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string theme = "Dark";
+            themeManager.SetTheme(new Themes.Dark(), this);
+            Directory.CreateDirectory(Path.GetDirectoryName(themeFilePath));
+            File.WriteAllText(themeFilePath, theme);
+        }
+
+        private void whiteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string theme = "White";
+            themeManager.SetTheme(new Themes.White(), this);
+            Directory.CreateDirectory(Path.GetDirectoryName(themeFilePath));
+            File.WriteAllText(themeFilePath, theme);
+        }
+        private void SetTheme()
+        {
+            string themeFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XYZtext", "theme.txt");
+            if (File.Exists(themeFilePath))
+            {
+                string themeName = File.ReadAllText(themeFilePath).Trim();
+                if (themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase))
+                {
+                    themeManager.SetTheme(new Themes.Dark(), this);
+                }
+                else if (themeName.Equals("White", StringComparison.OrdinalIgnoreCase))
+                {
+                    themeManager.SetTheme(new Themes.White(), this);
+                }
+                else
+                {
+                    themeManager.SetTheme(new Themes.White(), this);
+                }
+            }
+            else
+            {
+                themeManager.SetTheme(new Themes.White(), this);
+            }
         }
     }
 }
