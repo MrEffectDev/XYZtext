@@ -39,6 +39,8 @@ namespace xyztext
             context.darkToolStripMenuItem.ForeColor = theme.TextColor;
             context.whiteToolStripMenuItem.BackColor = theme.ToolsPanelColor;
             context.whiteToolStripMenuItem.ForeColor = theme.TextColor;
+            context.importFromTXTToolStripMenuItem1.BackColor = theme.ToolsPanelColor; 
+            context.importFromTXTToolStripMenuItem1.ForeColor = theme.TextColor; 
 
             context.CB_Entry.BackColor = theme.ToolsPanelColor;
             context.CB_Entry.ForeColor = theme.TextColor;

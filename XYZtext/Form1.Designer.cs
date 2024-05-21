@@ -45,6 +45,7 @@
             this.whiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.RTB_Text = new System.Windows.Forms.RichTextBox();
+            this.importFromTXTToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,7 +56,7 @@
             this.B_SaveText.Name = "B_SaveText";
             this.B_SaveText.Size = new System.Drawing.Size(88, 24);
             this.B_SaveText.TabIndex = 2;
-            this.B_SaveText.Text = "Сохранить";
+            this.B_SaveText.Text = "Save";
             this.B_SaveText.UseVisualStyleBackColor = true;
             this.B_SaveText.Click += new System.EventHandler(this.B_SaveText_Click);
             // 
@@ -87,16 +88,17 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menu_openFolder});
+            this.menu_openFolder,
+            this.importFromTXTToolStripMenuItem1});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(48, 19);
-            this.fileToolStripMenuItem.Text = "Файл";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 19);
+            this.fileToolStripMenuItem.Text = "File";
             // 
             // menu_openFolder
             // 
             this.menu_openFolder.Name = "menu_openFolder";
-            this.menu_openFolder.Size = new System.Drawing.Size(156, 22);
-            this.menu_openFolder.Text = "Открыть папку";
+            this.menu_openFolder.Size = new System.Drawing.Size(180, 22);
+            this.menu_openFolder.Text = "Open folder";
             this.menu_openFolder.Click += new System.EventHandler(this.openFolder_Click);
             // 
             // menu_Tools
@@ -107,8 +109,8 @@
             this.RemoveTextSplitToolStripMenuItem});
             this.menu_Tools.Enabled = false;
             this.menu_Tools.Name = "menu_Tools";
-            this.menu_Tools.Size = new System.Drawing.Size(95, 19);
-            this.menu_Tools.Text = "Инструменты";
+            this.menu_Tools.Size = new System.Drawing.Size(46, 19);
+            this.menu_Tools.Text = "Tools";
             // 
             // menu_DumpTXT
             // 
@@ -120,15 +122,15 @@
             // SplitTextToolStripMenuItem
             // 
             this.SplitTextToolStripMenuItem.Name = "SplitTextToolStripMenuItem";
-            this.SplitTextToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.SplitTextToolStripMenuItem.Text = "Автоматически разделить текст";
+            this.SplitTextToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.SplitTextToolStripMenuItem.Text = "Automatically split text";
             this.SplitTextToolStripMenuItem.Click += new System.EventHandler(this.SplitTextToolStripMenuItem_Click);
             // 
             // RemoveTextSplitToolStripMenuItem
             // 
             this.RemoveTextSplitToolStripMenuItem.Name = "RemoveTextSplitToolStripMenuItem";
-            this.RemoveTextSplitToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.RemoveTextSplitToolStripMenuItem.Text = "Убрать разделение текста";
+            this.RemoveTextSplitToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.RemoveTextSplitToolStripMenuItem.Text = "Remove text separation";
             this.RemoveTextSplitToolStripMenuItem.Click += new System.EventHandler(this.RemoveTextSplitToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
@@ -136,13 +138,13 @@
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.vKTextMeToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(68, 19);
-            this.helpToolStripMenuItem.Text = "Помощь";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 19);
+            this.helpToolStripMenuItem.Text = "Help";
             // 
             // vKTextMeToolStripMenuItem
             // 
             this.vKTextMeToolStripMenuItem.Name = "vKTextMeToolStripMenuItem";
-            this.vKTextMeToolStripMenuItem.Size = new System.Drawing.Size(88, 22);
+            this.vKTextMeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.vKTextMeToolStripMenuItem.Text = "VK";
             this.vKTextMeToolStripMenuItem.Click += new System.EventHandler(this.vKTextMeToolStripMenuItem_Click);
             // 
@@ -151,8 +153,8 @@
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.themeToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(79, 19);
-            this.settingsToolStripMenuItem.Text = "Настройки";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 19);
+            this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // themeToolStripMenuItem
             // 
@@ -161,20 +163,20 @@
             this.whiteToolStripMenuItem});
             this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
             this.themeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.themeToolStripMenuItem.Text = "Тема";
+            this.themeToolStripMenuItem.Text = "Theme";
             // 
             // darkToolStripMenuItem
             // 
             this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
             this.darkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.darkToolStripMenuItem.Text = "Темная";
+            this.darkToolStripMenuItem.Text = "Dark";
             this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
             // 
             // whiteToolStripMenuItem
             // 
             this.whiteToolStripMenuItem.Name = "whiteToolStripMenuItem";
             this.whiteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.whiteToolStripMenuItem.Text = "Светлая";
+            this.whiteToolStripMenuItem.Text = "Light";
             this.whiteToolStripMenuItem.Click += new System.EventHandler(this.whiteToolStripMenuItem_Click);
             // 
             // CB_Entry
@@ -198,6 +200,13 @@
             this.RTB_Text.Size = new System.Drawing.Size(634, 306);
             this.RTB_Text.TabIndex = 9;
             this.RTB_Text.Text = "";
+            // 
+            // importFromTXTToolStripMenuItem1
+            // 
+            this.importFromTXTToolStripMenuItem1.Name = "importFromTXTToolStripMenuItem1";
+            this.importFromTXTToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.importFromTXTToolStripMenuItem1.Text = "Import from TXT";
+            this.importFromTXTToolStripMenuItem1.Click += new System.EventHandler(this.ImportTXT_Click);
             // 
             // Form1
             // 
@@ -241,6 +250,7 @@
         public System.Windows.Forms.ToolStripMenuItem themeToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem darkToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem whiteToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem importFromTXTToolStripMenuItem1;
     }
 }
 

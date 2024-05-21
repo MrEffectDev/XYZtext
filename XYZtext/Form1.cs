@@ -21,7 +21,7 @@ namespace xyzext
             themeManager = new ThemeManager();
             SetTheme();
             SetCurrentFileNameInApp(this, "Null");
-            setStringsTextBox(new string[] { "Загрузите папку с текстовыми файлами.", "Затем будут отображены текстовые строки.", "Используйте ComboBox / выпадающее меню, чтобы выбрать, какую запись отобразить." });
+            setStringsTextBox(new string[] { "Load the folder with the text files.", "The text strings will then be displayed.", "Use the ComboBox / drop-down menu to choose which record to display." });
         }
         public string[] files;
         // IO
@@ -35,7 +35,7 @@ namespace xyzext
                 if (sdr == DialogResult.OK)
                 {
                     bool newline = false;
-                    if (MessageBox.Show("Удалить форматирование новой строки?", "Alert", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (MessageBox.Show("Remove newline formatting? Like /r /n /c", "Alert", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         newline = true;
                     string path = saveDump.FileName;
                     using (MemoryStream ms = new MemoryStream())
@@ -45,7 +45,7 @@ namespace xyzext
                             {
                                 string[] data = getStringsFromFile(files[i]);
                                 tw.WriteLine("~~~~~~~~~~~~~~~");
-                                tw.WriteLine("Файл Текста: " + i.ToString());
+                                tw.WriteLine("File Name: " + Path.GetFileName(files[i]));
                                 tw.WriteLine("~~~~~~~~~~~~~~~");
                                 if (data != null)
                                     foreach (string line in data)
@@ -58,7 +58,65 @@ namespace xyzext
                             }
                         File.WriteAllBytes(path, ms.ToArray());
                     }
+                    MessageBox.Show("Done!");
                 }
+            }
+        }
+        private void ImportTXT_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog importDump = new OpenFileDialog();
+            importDump.Filter = "Text File|*.txt";
+            DialogResult dialogResult = importDump.ShowDialog();
+            
+            if (dialogResult == DialogResult.OK)
+            {
+                //part 0: get data
+                string outputFolderPath = "";
+                FolderBrowserDialog outputFolderSelect = new FolderBrowserDialog();
+                outputFolderSelect.Description = "Output";
+                if (outputFolderSelect.ShowDialog() == DialogResult.OK)
+                    outputFolderPath = outputFolderSelect.SelectedPath;
+                MessageBox.Show("Sometimes errors may occur, the program will eliminate them by itself. Just press OK");
+                //part 1: read the file 
+                string path = importDump.FileName;
+                string[] lines = File.ReadAllLines(path);
+                List<string> fileNames = new List<string>();
+                List<string> fileContents = new List<string>();
+                string currentFileName = "";
+                StringBuilder currentFileContent = new StringBuilder();
+                
+                foreach (string line in lines)
+                {
+                    if (line.StartsWith("File Name:"))
+                    {
+                        currentFileName = line.Substring(10).Trim();
+                    }
+                    else if (!line.StartsWith("~~~~~~~~~~~~~~~"))
+                    {
+                        currentFileContent.AppendLine(line);
+                    }
+                    else if (!string.IsNullOrEmpty(currentFileName))
+                    {
+                        fileNames.Add(currentFileName);
+                        fileContents.Add(currentFileContent.ToString().Trim());
+                        currentFileContent.Clear();
+                        currentFileName = "";
+                    }
+                }
+                //part 2: analyze files and get bytes 
+                List<byte[]> bytes = new List<byte[]>();
+                for (int i = 0; i < fileContents.Count; i++)
+                {
+                    RTB_Text.Text = fileContents[i];
+                    bytes.Add(getBytesForFile(getCurrentTextBoxLines()));
+                }
+
+                //part 3: write files
+                for (int i = 0; i < fileNames.Count; i++)
+                {
+                    File.WriteAllBytes(outputFolderPath + "/" +  fileNames[i], bytes[i]);
+                }
+                MessageBox.Show("Done!");
             }
         }
         private void file_DragEnter(object sender, DragEventArgs e)
@@ -145,11 +203,11 @@ namespace xyzext
 
             try // Some sanity checking to prevent errors.
             {
-                if (initialKey != 0) throw new Exception("Неверный начальный ключ! Не 0?");
-                if (sectionData + totalLength != data.Length || textSections != 1) throw new Exception("Недопустимый текстовый файл");
+                if (initialKey != 0) throw new Exception("Incorrect initial key! Not 0?");
+                if (sectionData + totalLength != data.Length || textSections != 1) throw new Exception("Invalid text file");
 
                 uint sectionLength = BitConverter.ToUInt32(data, sectionData);
-                if (sectionLength != totalLength) throw new Exception("Размер секции и общий размер не совпадают.");
+                if (sectionLength != totalLength) throw new Exception("The section size and the overall size do not match.");
             }
             catch { return null; };
 
@@ -368,11 +426,11 @@ namespace xyzext
                     bw.Write(encryptU16(1, ref key));
                     bw.Write(encryptU16(0xBE01, ref key));
                 }
-                else { throw new Exception($"Недопустимая завершенная строка! На строке:\n{line}"); }
+                else { throw new Exception($"Invalid completed string! On the line:\n{line}"); }
             else if (val == '[')    // Special Variable
             {
                 int bracket = line.Substring(i + 1).IndexOf(']');
-                if (bracket < 3) throw new Exception("Ошибка кодировки переменной!");
+                if (bracket < 3) throw new Exception("Variable encoding error!");
 
                 // [VAR X(a, b)]
                 // Remove the [ ] -> VAR X(a, b)
@@ -407,12 +465,12 @@ namespace xyzext
                                 varValue = getVariableBytes(varType, ref args);
                                 break;
                             }
-                        default: throw new Exception("Неизвестный тип метода переменной!");
+                        default: throw new Exception("Unknown variable method type!");
                     }
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Ошибка переменной. Текст текущей строки:\n\n" + line + "\n\n" + e.ToString(), "Alert");
+                    MessageBox.Show("Variable error. Text of the current line:\n\n" + line + "\n\n" + e.ToString(), "Alert");
                 }
 
                 // Write the Variable prefix.
@@ -536,7 +594,6 @@ namespace xyzext
         {
             try
             {
-                // Создание процесса для открытия браузера
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = url,
@@ -545,7 +602,7 @@ namespace xyzext
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при открытии браузера: {ex.Message}", "Ошибка");
+                MessageBox.Show($"Error opening browser: {ex.Message}", "Error");
             }
         }
 
@@ -557,7 +614,7 @@ namespace xyzext
             }
             else
             {
-                MessageBox.Show("Нужно выделить текст, который вы хотите разделить. Затем программа автоматически разделит текст по длине одного предложения в диалоговом окне.");
+                MessageBox.Show("You need to select the text you want to split. Then the program will automatically divide the text by the length of one sentence in the dialog box.");
             }
         }
         private string SplitText(string text, int maxCharInSentence)
@@ -607,12 +664,12 @@ namespace xyzext
             }
             else
             {
-                MessageBox.Show("Нужно выделить текст, в котором вы хотите убрать разделения текст. Затем программа автоматически уберет их.");
+                MessageBox.Show("You need to select the text where you want to remove text separations. Then the program will automatically remove them.");
             }
         }
         private void SetCurrentFileNameInApp(Form form, string newName)
         {
-            form.Text = $"XYZtext - текущий файл: {newName}";
+            form.Text = $"XYZtext - current file: {newName}";
         }
 
         private void darkToolStripMenuItem_Click(object sender, EventArgs e)
