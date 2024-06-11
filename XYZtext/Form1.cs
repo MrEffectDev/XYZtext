@@ -41,6 +41,7 @@ namespace xyzext
                     using (MemoryStream ms = new MemoryStream())
                     {
                         using (TextWriter tw = new StreamWriter(ms))
+                        {
                             for (int i = 0; i < files.Length; i++)
                             {
                                 string[] data = getStringsFromFile(files[i]);
@@ -56,6 +57,8 @@ namespace xyzext
                                             tw.WriteLine(line);
                                     }
                             }
+                            tw.WriteLine("~~~~~~~~~~~~~~~");
+                        }
                         File.WriteAllBytes(path, ms.ToArray());
                     }
                     MessageBox.Show("Done!");
@@ -84,24 +87,34 @@ namespace xyzext
                 List<string> fileContents = new List<string>();
                 string currentFileName = "";
                 StringBuilder currentFileContent = new StringBuilder();
-                
+
                 foreach (string line in lines)
                 {
                     if (line.StartsWith("File Name:"))
                     {
+                        if (!string.IsNullOrEmpty(currentFileName))
+                        {
+                            fileNames.Add(currentFileName);
+                            fileContents.Add(currentFileContent.ToString().TrimEnd());
+                            currentFileContent.Clear();
+                        }
                         currentFileName = line.Substring(10).Trim();
                     }
-                    else if (!line.StartsWith("~~~~~~~~~~~~~~~"))
+                    else if (line.StartsWith("~~~~~~~~~~~~~~~"))
+                    {
+                        // Skip the separator line
+                    }
+                    else
                     {
                         currentFileContent.AppendLine(line);
                     }
-                    else if (!string.IsNullOrEmpty(currentFileName))
-                    {
-                        fileNames.Add(currentFileName);
-                        fileContents.Add(currentFileContent.ToString().Trim());
-                        currentFileContent.Clear();
-                        currentFileName = "";
-                    }
+                }
+
+                // Handle the last file if the loop ends and there is content left
+                if (!string.IsNullOrEmpty(currentFileName))
+                {
+                    fileNames.Add(currentFileName);
+                    fileContents.Add(currentFileContent.ToString().TrimEnd());
                 }
                 //part 2: analyze files and get bytes 
                 List<byte[]> bytes = new List<byte[]>();
@@ -114,7 +127,7 @@ namespace xyzext
                 //part 3: write files
                 for (int i = 0; i < fileNames.Count; i++)
                 {
-                    File.WriteAllBytes(outputFolderPath + "/" +  fileNames[i], bytes[i]);
+                    File.WriteAllBytes(outputFolderPath + "/" +  fileNames[i].Trim(), bytes[i]);
                 }
                 MessageBox.Show("Done!");
             }
