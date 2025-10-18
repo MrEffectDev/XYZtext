@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace xyzext
+namespace xyztext
 {
     static class Program
     {

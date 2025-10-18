@@ -1,137 +1,234 @@
-﻿using System;
+﻿//10.16.2025 OMG THIS CODE IS SHIT, I CAN'T BELIVE I WROTE LIKE THIS 2 YEARS AGO
+//It'll be a complex task to rewrite it all. Plus there's a big part of this code by xytext dev
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Forms;
-using xyztext;
 
-namespace xyzext
+namespace xyztext
 {
     public partial class Form1 : Form
     {
-        private string themeFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XYZtext", "theme.txt");
-        private ThemeManager themeManager;
+        public string[] Files;
+        private string _themeFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XYZtext", "theme.txt");
+        private string _configFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XYZtext", "config.txt");
+        private ThemeManager _themeManager;
+        private bool _isModified = false;
+        private string _currentFileName = "Null";
+        private bool _ignoreInvalidVariables = false;
+
         public Form1()
         {
             this.DragEnter += new DragEventHandler(file_DragEnter);
             this.DragDrop += new DragEventHandler(file_DragDrop);
             InitializeComponent();
-            themeManager = new ThemeManager();
+            ShowAboutAppMessage();
+            _themeManager = new ThemeManager();
             SetTheme();
-            SetCurrentFileNameInApp(this, "Null");
-            setStringsTextBox(new string[] { "Load the folder with the text files.", "The text strings will then be displayed.", "Use the ComboBox / drop-down menu to choose which record to display." });
+            LoadConfig();
+            setStringsTextBox(new string[]
+            {
+                "Step 1: Load a folder containing text files.",
+                "Step 2: The text from the files will be displayed here.",
+                "Step 3: Use the ComboBox to select which text entry to edit.",
+                "",
+                "Enjoy using XYZtext! Created by MrEffect"
+            });
+
+            RTB_Text.TextChanged += OnTextChanged;
         }
-        public string[] files;
+
+        private void UpdateTitle()
+        {
+            string star = _isModified ? "*" : "";
+            this.Text = $"XYZtext - current file: {_currentFileName}{star}";
+        }
+
+        private void OnTextChanged(object sender, EventArgs e)
+        {
+            if (!_isModified)
+            {
+                _isModified = true;
+                UpdateTitle();
+            }
+        }
+
         // IO
         private void dumpTXT_Click(object sender, EventArgs e)
         {
-            if (files.Length > 0)
+            if (Files.Length == 0)
+                return;
+
+            SaveFileDialog saveDump = new SaveFileDialog();
+            saveDump.Filter = "Text File|*.txt";
+            if (saveDump.ShowDialog() != DialogResult.OK)
+                return;
+
+            bool newline = false;
+            if (MessageBox.Show("Remove newline formatting? Like /r /n /c", "Alert", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                newline = true;
+
+            string path = saveDump.FileName;
+
+            using (ProgressForm progressForm = new ProgressForm())
             {
-                SaveFileDialog saveDump = new SaveFileDialog();
-                saveDump.Filter = "Text File|*.txt";
-                DialogResult sdr = saveDump.ShowDialog();
-                if (sdr == DialogResult.OK)
+                progressForm.Show();
+                progressForm.BringToFront();
+                progressForm.UpdateProgress(0, "Starting export...");
+
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    bool newline = false;
-                    if (MessageBox.Show("Remove newline formatting? Like /r /n /c", "Alert", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                        newline = true;
-                    string path = saveDump.FileName;
-                    using (MemoryStream ms = new MemoryStream())
+                    using (TextWriter tw = new StreamWriter(ms))
                     {
-                        using (TextWriter tw = new StreamWriter(ms))
+                        for (int i = 0; i < Files.Length; i++)
                         {
-                            for (int i = 0; i < files.Length; i++)
-                            {
-                                string[] data = getStringsFromFile(files[i]);
-                                tw.WriteLine("~~~~~~~~~~~~~~~");
-                                tw.WriteLine("File Name: " + Path.GetFileName(files[i]));
-                                tw.WriteLine("~~~~~~~~~~~~~~~");
-                                if (data != null)
-                                    foreach (string line in data)
-                                    {
-                                        if (newline)
-                                            tw.WriteLine(line.Replace("\\n\\n", " ").Replace("\\n", " ").Replace("\\c", "").Replace("\\r", "")); // Strip out formatting
-                                        else
-                                            tw.WriteLine(line);
-                                    }
-                            }
+                            string currentFile = Path.GetFileName(Files[i]);
+                            string[] data = getStringsFromFile(Files[i]);
+
                             tw.WriteLine("~~~~~~~~~~~~~~~");
+                            tw.WriteLine("File Name: " + currentFile);
+                            tw.WriteLine("~~~~~~~~~~~~~~~");
+
+                            if (data != null)
+                            {
+                                foreach (string line in data)
+                                {
+                                    if (newline)
+                                        tw.WriteLine(line.Replace("\\n\\n", " ").Replace("\\n", " ").Replace("\\c", "").Replace("\\r", ""));
+                                    else
+                                        tw.WriteLine(line);
+                                }
+                            }
+
+                            int percent = (int)((i + 1) * 100.0 / Files.Length);
+                            progressForm.UpdateProgress(percent, currentFile);
+                            Application.DoEvents();
                         }
-                        File.WriteAllBytes(path, ms.ToArray());
+
+                        tw.WriteLine("~~~~~~~~~~~~~~~");
                     }
-                    MessageBox.Show("Done!");
+
+                    File.WriteAllBytes(path, ms.ToArray());
                 }
+
+                progressForm.UpdateProgress(100, "Done!");
+                System.Threading.Thread.Sleep(300);
+                progressForm.Close();
             }
+
+            MessageBox.Show("Dump completed successfully!", "Success");
         }
+
+
         private void ImportTXT_Click(object sender, EventArgs e)
         {
             OpenFileDialog importDump = new OpenFileDialog();
             importDump.Filter = "Text File|*.txt";
             DialogResult dialogResult = importDump.ShowDialog();
-            
-            if (dialogResult == DialogResult.OK)
+
+            if (dialogResult != DialogResult.OK)
+                return;
+
+            string outputFolderPath = "";
+
+            using (var dialog = new CommonOpenFileDialog())
             {
-                //part 0: get data
-                string outputFolderPath = "";
-                FolderBrowserDialog outputFolderSelect = new FolderBrowserDialog();
-                outputFolderSelect.Description = "Output";
-                if (outputFolderSelect.ShowDialog() == DialogResult.OK)
-                    outputFolderPath = outputFolderSelect.SelectedPath;
-                MessageBox.Show("Sometimes errors may occur, the program will eliminate them by itself. Just press OK");
-                //part 1: read the file 
-                string path = importDump.FileName;
-                string[] lines = File.ReadAllLines(path);
-                List<string> fileNames = new List<string>();
-                List<string> fileContents = new List<string>();
-                string currentFileName = "";
-                StringBuilder currentFileContent = new StringBuilder();
+                dialog.IsFolderPicker = true;
+                dialog.Title = "Select Output Folder";
+                dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-                foreach (string line in lines)
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    if (line.StartsWith("File Name:"))
-                    {
-                        if (!string.IsNullOrEmpty(currentFileName))
-                        {
-                            fileNames.Add(currentFileName);
-                            fileContents.Add(currentFileContent.ToString().TrimEnd());
-                            currentFileContent.Clear();
-                        }
-                        currentFileName = line.Substring(10).Trim();
-                    }
-                    else if (line.StartsWith("~~~~~~~~~~~~~~~"))
-                    {
-                        // Skip the separator line
-                    }
-                    else
-                    {
-                        currentFileContent.AppendLine(line);
-                    }
+                    outputFolderPath = dialog.FileName;
                 }
+                else
+                {
+                    return;
+                }
+            }
 
-                // Handle the last file if the loop ends and there is content left
-                if (!string.IsNullOrEmpty(currentFileName))
-                {
-                    fileNames.Add(currentFileName);
-                    fileContents.Add(currentFileContent.ToString().TrimEnd());
-                }
-                //part 2: analyze files and get bytes 
-                List<byte[]> bytes = new List<byte[]>();
-                for (int i = 0; i < fileContents.Count; i++)
-                {
-                    RTB_Text.Text = fileContents[i];
-                    bytes.Add(getBytesForFile(getCurrentTextBoxLines()));
-                }
+            MessageBox.Show("Sometimes errors may occur; the program will attempt to handle them automatically. Just press OK(Will be fixed in new versions)", "Notice");
 
-                //part 3: write files
+            // --- Part 1: read the file ---
+            string path = importDump.FileName;
+            string[] lines = File.ReadAllLines(path);
+            List<string> fileNames = new List<string>();
+            List<string> fileContents = new List<string>();
+            string currentFileName = "";
+            StringBuilder currentFileContent = new StringBuilder();
+
+            foreach (string line in lines)
+            {
+                if (line.StartsWith("File Name:"))
+                {
+                    if (!string.IsNullOrEmpty(currentFileName))
+                    {
+                        fileNames.Add(currentFileName);
+                        fileContents.Add(currentFileContent.ToString().TrimEnd());
+                        currentFileContent.Clear();
+                    }
+                    currentFileName = line.Substring(10).Trim();
+                }
+                else if (line.StartsWith("~~~~~~~~~~~~~~~"))
+                {
+                    continue; // skip separator
+                }
+                else
+                {
+                    currentFileContent.AppendLine(line);
+                }
+            }
+            if (!string.IsNullOrEmpty(currentFileName))
+            {
+                fileNames.Add(currentFileName);
+                fileContents.Add(currentFileContent.ToString().TrimEnd());
+            }
+
+            // --- Part 2: generate bytes ---
+            List<byte[]> bytes = new List<byte[]>();
+            for (int i = 0; i < fileContents.Count; i++)
+            {
+                RTB_Text.Text = fileContents[i];
+                bytes.Add(getBytesForFile(getCurrentTextBoxLines()));
+            }
+
+            // --- Part 3: export files with progress ---
+            using (ProgressForm progressForm = new ProgressForm())
+            {
+                progressForm.Show();
+                progressForm.BringToFront();
+                progressForm.UpdateProgress(0, "Starting export...");
+
                 for (int i = 0; i < fileNames.Count; i++)
                 {
-                    File.WriteAllBytes(outputFolderPath + "/" +  fileNames[i].Trim(), bytes[i]);
+                    string currentFile = fileNames[i].Trim();
+                    byte[] data = bytes[i];
+
+                    string outputPath = Path.Combine(outputFolderPath, currentFile);
+                    File.WriteAllBytes(outputPath, data);
+
+                    int percent = (int)((i + 1) * 100.0 / fileNames.Count);
+                    progressForm.UpdateProgress(percent, currentFile);
+
+                    Application.DoEvents();
                 }
-                MessageBox.Show("Done!");
+
+                progressForm.UpdateProgress(100, "Done!");
+                System.Threading.Thread.Sleep(300);
+                progressForm.Close();
             }
+            openFolderPath(outputFolderPath);
+            MessageBox.Show("All files exported successfully!", "Success");
         }
+
+
         private void file_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
@@ -145,14 +242,20 @@ namespace xyzext
         }
         private void changeEntry(object sender, EventArgs e)
         {
-            string file = files[CB_Entry.SelectedIndex];
+            string file = Files[CB_Entry.SelectedIndex];
             string[] data = getStringsFromFile(file);
-            SetCurrentFileNameInApp(this, Path.GetFileName(files[CB_Entry.SelectedIndex]));
+            _currentFileName = Path.GetFileName(Files[CB_Entry.SelectedIndex]);
+
             setStringsTextBox(data);
+
+            _isModified = false;
+            UpdateTitle();
         }
         private void B_SaveText_Click(object sender, EventArgs e)
         {
-            File.WriteAllBytes(files[CB_Entry.SelectedIndex], getBytesForFile(getCurrentTextBoxLines()));
+            File.WriteAllBytes(Files[CB_Entry.SelectedIndex], getBytesForFile(getCurrentTextBoxLines()));
+            _isModified = false;
+            UpdateTitle();
         }
         private void openFolder_Click(object sender, EventArgs e)
         {
@@ -162,8 +265,8 @@ namespace xyzext
         }
         private void openFolderPath(string path)
         {
-            files = Directory.GetFiles(path, "*.*", SearchOption.TopDirectoryOnly);
-            if (files.Length == 0)
+            Files = Directory.GetFiles(path, "*.dat*", SearchOption.TopDirectoryOnly);
+            if (Files.Length == 0)
             {
                 TB_Path.Text = "";
                 return;
@@ -172,7 +275,7 @@ namespace xyzext
             CB_Entry.Items.Clear();
 
             // Add all the valid entries.
-            for (int i = 0; i < files.Length; i++)
+            for (int i = 0; i < Files.Length; i++)
                 CB_Entry.Items.Add(i.ToString());
 
             // Enable Text Line Editing Interface
@@ -199,7 +302,7 @@ namespace xyzext
 
         private string[] getCurrentTextBoxLines()
         {
-            string[] lines = RTB_Text.Lines;
+            string[] lines = RTB_Text.Lines.ToArray();
             return lines;
         }
 
@@ -222,7 +325,8 @@ namespace xyzext
                 uint sectionLength = BitConverter.ToUInt32(data, sectionData);
                 if (sectionLength != totalLength) throw new Exception("The section size and the overall size do not match.");
             }
-            catch { return null; };
+            catch { return null; }
+            ;
 
             // Prep result storage.
             ushort key = 0x7C89;
@@ -483,7 +587,8 @@ namespace xyzext
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Variable error. Text of the current line:\n\n" + line + "\n\n" + e.ToString(), "Alert");
+                    if (!_ignoreInvalidVariables)
+                        MessageBox.Show("Variable error. Text of the current line:\n\n" + line + "\n\n" + e.ToString(), "Alert");
                 }
 
                 // Write the Variable prefix.
@@ -598,9 +703,21 @@ namespace xyzext
 
         }
 
-        private void vKTextMeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenGithubPage(object sender, EventArgs e)
         {
-            string url = "https://vk.com/mreffect";
+            string url = "https://github.com/MrEffectDev";
+            OpenBrowser(url);
+        }
+
+        private void OpenYoutubePage(object sender, EventArgs e)
+        {
+            string url = "https://www.youtube.com/@mreffect_dev";
+            OpenBrowser(url);
+        }
+
+        private void OpenSupportPage(object sender, EventArgs e)
+        {
+            string url = "https://boosty.to/mreffect";
             OpenBrowser(url);
         }
         private void OpenBrowser(string url)
@@ -673,55 +790,189 @@ namespace xyzext
         {
             if (RTB_Text.SelectionLength > 0)
             {
-                RTB_Text.SelectedText = RTB_Text.SelectedText.Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ").Replace("  ", " ");//Удаляет все спец символы и лишние пробелы
+                RTB_Text.SelectedText = RTB_Text.SelectedText.Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ").Replace("  ", " ");
             }
             else
             {
                 MessageBox.Show("You need to select the text where you want to remove text separations. Then the program will automatically remove them.");
             }
         }
-        private void SetCurrentFileNameInApp(Form form, string newName)
-        {
-            form.Text = $"XYZtext - current file: {newName}";
-        }
 
         private void darkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string theme = "Dark";
-            themeManager.SetTheme(new Themes.Dark(), this);
-            Directory.CreateDirectory(Path.GetDirectoryName(themeFilePath));
-            File.WriteAllText(themeFilePath, theme);
+            _themeManager.SetTheme(new Themes.Dark(), this);
+            Directory.CreateDirectory(Path.GetDirectoryName(_themeFilePath));
+            File.WriteAllText(_themeFilePath, theme);
+            darkToolStripMenuItem.Checked = true;
+            whiteToolStripMenuItem.Checked = false;
         }
-
         private void whiteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string theme = "White";
-            themeManager.SetTheme(new Themes.White(), this);
-            Directory.CreateDirectory(Path.GetDirectoryName(themeFilePath));
-            File.WriteAllText(themeFilePath, theme);
+            _themeManager.SetTheme(new Themes.White(), this);
+            Directory.CreateDirectory(Path.GetDirectoryName(_themeFilePath));
+            File.WriteAllText(_themeFilePath, theme);
+            darkToolStripMenuItem.Checked = false;
+            whiteToolStripMenuItem.Checked = true;
         }
         private void SetTheme()
         {
-            string themeFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XYZtext", "theme.txt");
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string themeFilePath = Path.Combine(appData, "XYZtext", "theme.txt");
+
+            string themeName = "White";
+
             if (File.Exists(themeFilePath))
             {
-                string themeName = File.ReadAllText(themeFilePath).Trim();
-                if (themeName.Equals("Dark", StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    themeManager.SetTheme(new Themes.Dark(), this);
+                    themeName = File.ReadAllText(themeFilePath).Trim();
                 }
-                else if (themeName.Equals("White", StringComparison.OrdinalIgnoreCase))
+                catch
                 {
-                    themeManager.SetTheme(new Themes.White(), this);
+
                 }
-                else
-                {
-                    themeManager.SetTheme(new Themes.White(), this);
-                }
+            }
+
+            if (string.Equals(themeName, "Dark", StringComparison.OrdinalIgnoreCase))
+            {
+                _themeManager.SetTheme(new Themes.Dark(), this);
+                darkToolStripMenuItem.Checked = true;
             }
             else
             {
-                themeManager.SetTheme(new Themes.White(), this);
+                _themeManager.SetTheme(new Themes.White(), this);
+                whiteToolStripMenuItem.Checked = true;
+            }
+        }
+
+        private void unloadFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Files = null;
+
+            CB_Entry.Items.Clear();
+            CB_Entry.Enabled = false;
+            RTB_Text.Clear();
+            menu_Tools.Enabled = false;
+            TB_Path.Clear();
+            B_SaveText.Enabled = false;
+
+            _isModified = false;
+            _currentFileName = "Null";
+            UpdateTitle();
+
+            MessageBox.Show("All files have been unloaded.", "Unload Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ShowAboutAppMessage()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Version version = assembly.GetName().Version;
+
+            MessageBox.Show(
+                $"Welcome to XYZtext {version}!\n\n" +
+                "XYZtext is a tool for editing localization files for Pokémon games.\n" +
+                "(Tested on Pokémon Scarlet and Violet.)\n\n" +
+                "This program is completely free and open-source, created by MrEffect.\n" +
+                "You can find a link to me in the 'Help' menu.\n\n" +
+                "Even though the program is free, your support is greatly appreciated ♡♡♡\n\n" +
+                "Enjoy customizing your Pokémon game experience!",
+                "Welcome to XYZtext",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowAboutAppMessage();
+        }
+
+        private void ignoreInvalidVariablesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _ignoreInvalidVariables = !_ignoreInvalidVariables;
+            ignoreInvalidVariablesToolStripMenuItem.Checked = _ignoreInvalidVariables;
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            SaveConfig();
+        }
+
+        private void SaveConfig()
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(_configFilePath));
+                File.WriteAllText(_configFilePath, _ignoreInvalidVariables.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to save config: {ex.Message}", "Warning");
+            }
+        }
+
+        private void LoadConfig()
+        {
+            try
+            {
+                if (File.Exists(_configFilePath))
+                {
+                    string text = File.ReadAllText(_configFilePath).Trim();
+                    if (bool.TryParse(text, out bool value))
+                    {
+                        _ignoreInvalidVariables = value;
+                        ignoreInvalidVariablesToolStripMenuItem.Checked = _ignoreInvalidVariables;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load config: {ex.Message}", "Warning");
+            }
+        }
+
+        private void trimLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RTB_Text.SelectionLength > 0)
+            {
+                RTB_Text.SelectedText = RTB_Text.SelectedText.Trim();
+            }
+            else
+            {
+                MessageBox.Show("You need to select the text that you want to trim.");
+            }
+        }
+
+        private void lineInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RTB_Text.SelectionLength > 0)
+            {
+                string selectedText = RTB_Text.SelectedText;
+
+                int charCount = selectedText.Length;
+                int charNoSpaces = selectedText.Replace(" ", "").Replace("\n", "").Replace("\r", "").Length;
+
+                int wordCount = selectedText
+                    .Split(new char[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Length;
+
+                int lineCount = selectedText.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.None).Length;
+
+                MessageBox.Show(
+                    $"Selected Line Info:\n\n" +
+                    $"Characters (with spaces): {charCount}\n" +
+                    $"Characters (without spaces): {charNoSpaces}\n" +
+                    $"Words: {wordCount}\n" +
+                    $"Lines: {lineCount}",
+                    "Line Info"
+                );
+            }
+            else
+            {
+                MessageBox.Show("You need to select some text to see info.", "Line Info");
             }
         }
     }
