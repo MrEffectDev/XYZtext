@@ -154,7 +154,7 @@ namespace xyztext
                 }
             }
 
-            MessageBox.Show("Sometimes errors may occur; the program will attempt to handle them automatically. Just press OK(Will be fixed in new versions)", "Notice");
+            //MessageBox.Show("Sometimes errors may occur; the program will attempt to handle them automatically. Just press OK(Will be fixed in new versions)", "Notice");
 
             // --- Part 1: read the file ---
             string path = importDump.FileName;
@@ -290,7 +290,7 @@ namespace xyztext
         {
             if (textArray == null) // Error handling for bad inputs.
                 return;
-
+            RTB_Text.Clear();
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < textArray.Length; i++)
             {
@@ -298,6 +298,7 @@ namespace xyztext
             }
 
             RTB_Text.Text = sb.ToString();
+            RTB_Text.Text = RTB_Text.Text.TrimEnd('\r', '\n');
         }
 
         private string[] getCurrentTextBoxLines()
@@ -319,11 +320,11 @@ namespace xyztext
 
             try // Some sanity checking to prevent errors.
             {
-                if (initialKey != 0) throw new Exception("Incorrect initial key! Not 0?");
-                if (sectionData + totalLength != data.Length || textSections != 1) throw new Exception("Invalid text file");
+                if (initialKey != 0) throw new Exception("Invalid initial key! Not 0?");
+                if (sectionData + totalLength != data.Length || textSections != 1) throw new Exception("Invalid Text File");
 
                 uint sectionLength = BitConverter.ToUInt32(data, sectionData);
-                if (sectionLength != totalLength) throw new Exception("The section size and the overall size do not match.");
+                if (sectionLength != totalLength) throw new Exception("Section size and overall size do not match.");
             }
             catch { return null; }
             ;
@@ -371,6 +372,7 @@ namespace xyztext
             }
             return result;
         }
+
         private byte[] getBytesForFile(string[] lines)
         {
 
@@ -440,6 +442,7 @@ namespace xyztext
                 return textFile.ToArray();
             }
         }
+
         private ushort encryptU16(ushort val, ref ushort key)
         {
             val = (ushort)(key ^ val);
@@ -457,9 +460,11 @@ namespace xyztext
         private ushort getVariableBytes(string varType, ref List<ushort> args)
         {
             // Fetch the variable name...
-            int bracket = varType.IndexOf('(');
-            string variable = varType.Substring(0, bracket);
-            string[] arguments = varType.Substring(bracket + 1, varType.Length - bracket - 2).Split(',');
+            int bracket = varType.Count(c => c == '(') > 0 ? varType.IndexOf('(') : 0;
+            string variable = bracket == 0 ? varType : varType.Substring(0, bracket);
+            string[] arguments = bracket > 0 ?
+                varType.Substring(bracket + 1, varType.Length - bracket - 2).Split(',') :
+                new string[0];
 
             ushort varVal = 0;
 
@@ -516,8 +521,11 @@ namespace xyztext
                 default: varVal = Convert.ToUInt16(variable, 16); break;
             }
             // Set arguments in.
-            for (int i = 0; i < arguments.Length; i++)
-                args.Add(Convert.ToUInt16(arguments[i], 16));
+            foreach (var arg in arguments)
+            {
+                if (!string.IsNullOrWhiteSpace(arg))
+                    args.Add(Convert.ToUInt16(arg, 16));
+            }
 
             // All done.
             return varVal;
@@ -555,7 +563,7 @@ namespace xyztext
                 i += bracket + 1; // Advance the index to the end of the bracket.
 
                 string varMethod = varCMD.Split(' ')[0];                    // Returns VAR or WAIT or ~
-                string varType = varCMD.Substring(varMethod.Length + 1);    // Returns the remainder of the var command data.
+                string varType = varCMD.Substring(Math.Min(varMethod.Length + 1, varCMD.Length));   // Returns the remainder of the var command data.
                 ushort varValue = 0;
 
                 // Set up argument storage (even if it not used)

@@ -41,6 +41,8 @@
             this.menu_DumpTXT = new System.Windows.Forms.ToolStripMenuItem();
             this.SplitTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RemoveTextSplitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.trimLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lineInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.themeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,8 +55,6 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.RTB_Text = new FastColoredTextBoxNS.FastColoredTextBox();
-            this.trimLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lineInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).BeginInit();
             this.SuspendLayout();
@@ -92,7 +92,7 @@
             this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(634, 23);
+            this.menuStrip1.Size = new System.Drawing.Size(634, 22);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -160,6 +160,20 @@
             this.RemoveTextSplitToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.RemoveTextSplitToolStripMenuItem.Text = "Remove text separation";
             this.RemoveTextSplitToolStripMenuItem.Click += new System.EventHandler(this.RemoveTextSplitToolStripMenuItem_Click);
+            // 
+            // trimLineToolStripMenuItem
+            // 
+            this.trimLineToolStripMenuItem.Name = "trimLineToolStripMenuItem";
+            this.trimLineToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.trimLineToolStripMenuItem.Text = "Trim line";
+            this.trimLineToolStripMenuItem.Click += new System.EventHandler(this.trimLineToolStripMenuItem_Click);
+            // 
+            // lineInfoToolStripMenuItem
+            // 
+            this.lineInfoToolStripMenuItem.Name = "lineInfoToolStripMenuItem";
+            this.lineInfoToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.lineInfoToolStripMenuItem.Text = "Line info";
+            this.lineInfoToolStripMenuItem.Click += new System.EventHandler(this.lineInfoToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -271,7 +285,6 @@
             this.RTB_Text.CharWidth = 8;
             this.RTB_Text.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.RTB_Text.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.RTB_Text.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.RTB_Text.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RTB_Text.IsReplaceMode = false;
             this.RTB_Text.Location = new System.Drawing.Point(0, 56);
@@ -282,20 +295,7 @@
             this.RTB_Text.Size = new System.Drawing.Size(634, 306);
             this.RTB_Text.TabIndex = 9;
             this.RTB_Text.Zoom = 100;
-            // 
-            // trimLineToolStripMenuItem
-            // 
-            this.trimLineToolStripMenuItem.Name = "trimLineToolStripMenuItem";
-            this.trimLineToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.trimLineToolStripMenuItem.Text = "Trim line";
-            this.trimLineToolStripMenuItem.Click += new System.EventHandler(this.trimLineToolStripMenuItem_Click);
-            // 
-            // lineInfoToolStripMenuItem
-            // 
-            this.lineInfoToolStripMenuItem.Name = "lineInfoToolStripMenuItem";
-            this.lineInfoToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.lineInfoToolStripMenuItem.Text = "Line info";
-            this.lineInfoToolStripMenuItem.Click += new System.EventHandler(this.lineInfoToolStripMenuItem_Click);
+            this.RTB_Text.AutoCompleteBrackets = true;
             // 
             // Form1
             // 
