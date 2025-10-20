@@ -275,8 +275,15 @@ namespace xyztext
             CB_Entry.Items.Clear();
 
             // Add all the valid entries.
-            for (int i = 0; i < Files.Length; i++)
-                CB_Entry.Items.Add(i.ToString());
+            //for (int i = 0; i < Files.Length; i++)
+            //{
+            //    CB_Entry.Items.Add(i.ToString());
+            //}
+
+            foreach (string file in Files)
+            {
+                CB_Entry.Items.Add(Path.GetFileName(file));
+            }
 
             // Enable Text Line Editing Interface
             CB_Entry.Enabled = true;
