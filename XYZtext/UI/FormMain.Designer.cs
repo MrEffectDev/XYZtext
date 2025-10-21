@@ -1,6 +1,6 @@
 ﻿namespace xyztext
 {
-    partial class Form1
+    partial class FormMain
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.B_SaveText = new System.Windows.Forms.Button();
             this.TB_Path = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -48,6 +48,7 @@
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.whiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ignoreInvalidVariablesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gridViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.githubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.youtubeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,8 +56,10 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.RTB_Text = new FastColoredTextBoxNS.FastColoredTextBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // B_SaveText
@@ -74,10 +77,10 @@
             // 
             this.TB_Path.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TB_Path.Location = new System.Drawing.Point(191, 28);
+            this.TB_Path.Location = new System.Drawing.Point(315, 28);
             this.TB_Path.Name = "TB_Path";
             this.TB_Path.ReadOnly = true;
-            this.TB_Path.Size = new System.Drawing.Size(431, 20);
+            this.TB_Path.Size = new System.Drawing.Size(307, 20);
             this.TB_Path.TabIndex = 3;
             // 
             // menuStrip1
@@ -179,7 +182,8 @@
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.themeToolStripMenuItem,
-            this.ignoreInvalidVariablesToolStripMenuItem});
+            this.ignoreInvalidVariablesToolStripMenuItem,
+            this.gridViewToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(75, 18);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -213,6 +217,13 @@
             this.ignoreInvalidVariablesToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.ignoreInvalidVariablesToolStripMenuItem.Text = "Ignore invalid variables";
             this.ignoreInvalidVariablesToolStripMenuItem.Click += new System.EventHandler(this.ignoreInvalidVariablesToolStripMenuItem_Click);
+            // 
+            // gridViewToolStripMenuItem
+            // 
+            this.gridViewToolStripMenuItem.Name = "gridViewToolStripMenuItem";
+            this.gridViewToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.gridViewToolStripMenuItem.Text = "Grid view";
+            this.gridViewToolStripMenuItem.Click += new System.EventHandler(this.gridViewToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -259,7 +270,7 @@
             this.CB_Entry.FormattingEnabled = true;
             this.CB_Entry.Location = new System.Drawing.Point(106, 28);
             this.CB_Entry.Name = "CB_Entry";
-            this.CB_Entry.Size = new System.Drawing.Size(79, 21);
+            this.CB_Entry.Size = new System.Drawing.Size(203, 21);
             this.CB_Entry.TabIndex = 5;
             this.CB_Entry.SelectedIndexChanged += new System.EventHandler(this.changeEntry);
             // 
@@ -268,6 +279,7 @@
             this.RTB_Text.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RTB_Text.AutoCompleteBrackets = true;
             this.RTB_Text.AutoCompleteBracketsList = new char[] {
         '(',
         ')',
@@ -286,6 +298,7 @@
             this.RTB_Text.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.RTB_Text.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.RTB_Text.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.RTB_Text.IndentBackColor = System.Drawing.Color.Transparent;
             this.RTB_Text.IsReplaceMode = false;
             this.RTB_Text.Location = new System.Drawing.Point(0, 56);
             this.RTB_Text.Name = "RTB_Text";
@@ -295,7 +308,26 @@
             this.RTB_Text.Size = new System.Drawing.Size(634, 306);
             this.RTB_Text.TabIndex = 9;
             this.RTB_Text.Zoom = 100;
-            this.RTB_Text.AutoCompleteBrackets = true;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.Control;
+            this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 55);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.dataGridView1.ShowEditingIcon = false;
+            this.dataGridView1.Size = new System.Drawing.Size(634, 307);
+            this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.Visible = false;
             // 
             // Form1
             // 
@@ -303,6 +335,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 362);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.RTB_Text);
             this.Controls.Add(this.CB_Entry);
             this.Controls.Add(this.TB_Path);
@@ -318,6 +351,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -350,6 +384,8 @@
         private System.Windows.Forms.ToolStripMenuItem ignoreInvalidVariablesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem trimLineToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lineInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gridViewToolStripMenuItem;
+        public System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 

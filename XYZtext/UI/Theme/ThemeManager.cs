@@ -1,11 +1,15 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Runtime.Remoting.Contexts;
+using System.Windows.Forms;
 using FastColoredTextBoxNS;
 
-namespace xyztext
+namespace xyztext.UI.Theme
 {
     public class ThemeManager
     {
-        public void SetTheme(ITheme theme, Form1 context)
+        private Font TextFont { get; } = new Font("Consolas", 10);
+
+        public void SetTheme(ITheme theme, FormMain context)
         {
             context.BackColor = theme.ToolsPanelColor;
             context.ForeColor = theme.TextColor;
@@ -14,6 +18,8 @@ namespace xyztext
 
             context.RTB_Text.BackColor = theme.TextFieldColor;
             context.RTB_Text.ForeColor = theme.TextColor;
+
+            ApplyThemeToDataGridView(context.dataGridView1, theme);
 
             if (context.RTB_Text is FastColoredTextBox fctb)
             {
@@ -63,5 +69,32 @@ namespace xyztext
                 }
             }
         }
+
+        private void ApplyThemeToDataGridView(DataGridView dgv, ITheme theme)
+        {
+            dgv.BackgroundColor = theme.TextFieldColor;
+            dgv.ForeColor = theme.TextColor;
+            dgv.GridColor = theme.TextColor;
+
+            dgv.EnableHeadersVisualStyles = false;
+
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = theme.ToolsPanelColor;
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = theme.TextColor;
+            dgv.RowHeadersDefaultCellStyle.BackColor = theme.ToolsPanelColor;
+            dgv.RowHeadersDefaultCellStyle.ForeColor = theme.TextColor;
+
+            dgv.DefaultCellStyle.Font = TextFont;
+            dgv.ColumnHeadersDefaultCellStyle.Font = TextFont;
+            dgv.RowHeadersDefaultCellStyle.Font = TextFont;
+
+            dgv.DefaultCellStyle.BackColor = theme.TextFieldColor;
+            dgv.DefaultCellStyle.ForeColor = theme.TextColor;
+            dgv.DefaultCellStyle.SelectionForeColor = theme.TextColor;
+
+
+            dgv.RowsDefaultCellStyle.BackColor = theme.TextFieldColor;
+            dgv.AlternatingRowsDefaultCellStyle.BackColor = (theme as dynamic).AlternateRowColor;
+        }
+
     }
 }

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace xyztext
 {
-    static class Program
+    static class XYZtext
     {
         /// <summary>
         /// The main entry point for the application.
@@ -13,7 +13,7 @@ namespace xyztext
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new FormMain());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace xyztext
+namespace xyztext.UI.Theme
 {
     public class Themes
     {
@@ -15,6 +15,8 @@ namespace xyztext
             public Color CurrentLineColor { get; } = Color.FromArgb(50, 50, 50);
             public Color SelectionColor { get; } = Color.FromArgb(70, 130, 180, 50);
             public Color CaretColor { get; } = Color.White;
+
+            public Color AlternateRowColor { get; } = Color.FromArgb(50, 50, 50);
         }
 
         public class White : ITheme
@@ -28,6 +30,8 @@ namespace xyztext
             public Color CurrentLineColor { get; } = Color.FromArgb(230, 240, 255);
             public Color SelectionColor { get; } = Color.FromArgb(100, 173, 216, 230);
             public Color CaretColor { get; } = Color.Black;
+
+            public Color AlternateRowColor { get; } = Color.FromArgb(245, 245, 245);
         }
     }
 }

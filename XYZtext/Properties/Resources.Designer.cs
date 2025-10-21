@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace xyztext.Properties {
+namespace XYZtext.Properties {
     using System;
     
     

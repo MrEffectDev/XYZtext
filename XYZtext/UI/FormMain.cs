@@ -1,5 +1,6 @@
 ﻿//10.16.2025 OMG THIS CODE IS SHIT, I CAN'T BELIVE I WROTE LIKE THIS 2 YEARS AGO
 //It'll be a complex task to rewrite it all. Plus there's a big part of this code by xytext dev
+//10.21.2025 Code refactoring will be later.
 
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Forms;
+using xyztext.UI.Theme;
 
 namespace xyztext
 {
-    public partial class Form1 : Form
+    public partial class FormMain : Form
     {
         public string[] Files;
         private string _themeFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XYZtext", "theme.txt");
@@ -24,7 +26,7 @@ namespace xyztext
         private string _currentFileName = "Null";
         private bool _ignoreInvalidVariables = false;
 
-        public Form1()
+        public FormMain()
         {
             this.DragEnter += new DragEventHandler(file_DragEnter);
             this.DragDrop += new DragEventHandler(file_DragDrop);
@@ -41,8 +43,13 @@ namespace xyztext
                 "",
                 "Enjoy using XYZtext! Created by MrEffect"
             });
-
+            dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
             RTB_Text.TextChanged += OnTextChanged;
+        }
+
+        private void DataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            ApplyDataGridViewChangesToTextBox();
         }
 
         private void UpdateTitle()
@@ -247,6 +254,7 @@ namespace xyztext
             _currentFileName = Path.GetFileName(Files[CB_Entry.SelectedIndex]);
 
             setStringsTextBox(data);
+            SetStringsDataGridView(data);
 
             _isModified = false;
             UpdateTitle();
@@ -753,15 +761,101 @@ namespace xyztext
 
         private void SplitTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (RTB_Text.SelectionLength > 0)
+            if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
             {
-                RTB_Text.SelectedText = SplitText(RTB_Text.SelectedText, 50);
+                RTB_Text.SelectedText = SplitText(RTB_Text.SelectedText, 45);
+            }
+            else if (dataGridView1.Visible && dataGridView1.SelectedCells.Count > 0)
+            {
+                foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
+                {
+                    if (cell.Value != null)
+                        cell.Value = SplitText(cell.Value.ToString(), 50);
+                }
             }
             else
             {
-                MessageBox.Show("You need to select the text you want to split. Then the program will automatically divide the text by the length of one sentence in the dialog box.");
+                MessageBox.Show("Select some text or cells to split.");
             }
         }
+
+        private void RemoveTextSplitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
+            {
+                RTB_Text.SelectedText = RTB_Text.SelectedText.Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ").Replace("  ", " ");
+            }
+            else if (dataGridView1.Visible && dataGridView1.SelectedCells.Count > 0)
+            {
+                foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
+                {
+                    if (cell.Value != null)
+                        cell.Value = cell.Value.ToString().Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ").Replace("  ", " ");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select some text or cells to remove text separations.");
+            }
+        }
+
+        private void trimLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
+            {
+                RTB_Text.SelectedText = RTB_Text.SelectedText.Trim();
+            }
+            else if (dataGridView1.Visible && dataGridView1.SelectedCells.Count > 0)
+            {
+                foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
+                {
+                    if (cell.Value != null)
+                        cell.Value = cell.Value.ToString().Trim();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select some text or cells to trim.");
+            }
+        }
+
+        private void lineInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
+            {
+                ShowTextInfo(RTB_Text.SelectedText, "Selected Line Info");
+            }
+            else if (dataGridView1.Visible && dataGridView1.SelectedCells.Count > 0)
+            {
+                foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
+                {
+                    if (cell.Value != null)
+                        ShowTextInfo(cell.Value.ToString(), $"Cell [{cell.RowIndex}, {cell.ColumnIndex}] Info");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select some text or cells to see info.");
+            }
+        }
+
+        private void ShowTextInfo(string text, string title)
+        {
+            int charCount = text.Length;
+            int charNoSpaces = text.Replace(" ", "").Replace("\n", "").Replace("\r", "").Length;
+            int wordCount = text.Split(new char[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
+            int lineCount = text.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.None).Length;
+
+            MessageBox.Show(
+                $"{title}:\n\n" +
+                $"Characters (with spaces): {charCount}\n" +
+                $"Characters (without spaces): {charNoSpaces}\n" +
+                $"Words: {wordCount}\n" +
+                $"Lines: {lineCount}",
+                title
+            );
+        }
+
         private string SplitText(string text, int maxCharInSentence)
         {
             if (text.Length <= maxCharInSentence) return text;
@@ -785,6 +879,7 @@ namespace xyztext
 
             return output;
         }
+
         private List<int> FindSpaceIndexes(string input)
         {
             input = Regex.Replace(input, @"\[.*?\]", "");
@@ -801,17 +896,6 @@ namespace xyztext
             return spaceIndexes;
         }
 
-        private void RemoveTextSplitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (RTB_Text.SelectionLength > 0)
-            {
-                RTB_Text.SelectedText = RTB_Text.SelectedText.Replace("\\n", " ").Replace("\\r", " ").Replace("\\с", " ").Replace("  ", " ");
-            }
-            else
-            {
-                MessageBox.Show("You need to select the text where you want to remove text separations. Then the program will automatically remove them.");
-            }
-        }
 
         private void darkToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -949,46 +1033,78 @@ namespace xyztext
             }
         }
 
-        private void trimLineToolStripMenuItem_Click(object sender, EventArgs e)
+        private void gridViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (RTB_Text.SelectionLength > 0)
+            gridViewToolStripMenuItem.Checked = !gridViewToolStripMenuItem.Checked;
+            RTB_Text.Visible = !gridViewToolStripMenuItem.Checked;
+            dataGridView1.Visible = !RTB_Text.Visible;
+            if (gridViewToolStripMenuItem.Checked)
             {
-                RTB_Text.SelectedText = RTB_Text.SelectedText.Trim();
-            }
-            else
-            {
-                MessageBox.Show("You need to select the text that you want to trim.");
+                SetStringsDataGridView(getCurrentTextBoxLines());
             }
         }
 
-        private void lineInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ApplyDataGridViewChangesToTextBox()
         {
-            if (RTB_Text.SelectionLength > 0)
+            if (dataGridView1.Rows.Count == 0)
+                return;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                string selectedText = RTB_Text.SelectedText;
-
-                int charCount = selectedText.Length;
-                int charNoSpaces = selectedText.Replace(" ", "").Replace("\n", "").Replace("\r", "").Length;
-
-                int wordCount = selectedText
-                    .Split(new char[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Length;
-
-                int lineCount = selectedText.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.None).Length;
-
-                MessageBox.Show(
-                    $"Selected Line Info:\n\n" +
-                    $"Characters (with spaces): {charCount}\n" +
-                    $"Characters (without spaces): {charNoSpaces}\n" +
-                    $"Words: {wordCount}\n" +
-                    $"Lines: {lineCount}",
-                    "Line Info"
-                );
+                var cellValue = dataGridView1.Rows[i].Cells[1].Value;
+                if (cellValue != null)
+                {
+                    sb.AppendLine(cellValue.ToString());
+                }
+                else
+                {
+                    sb.AppendLine();
+                }
             }
-            else
+            RTB_Text.Text = sb.ToString().TrimEnd('\r', '\n');
+        }
+
+        private void SetStringsDataGridView(string[] textArray)
+        {
+            dataGridView1.CellValueChanged -= DataGridView1_CellValueChanged;
+            dataGridView1.SuspendLayout();
+            dataGridView1.Rows.Clear();
+
+            if (textArray == null)
+                return;
+
+            dataGridView1.Columns.Clear();
+
+            dataGridView1.AllowUserToResizeColumns = false;
+            DataGridViewColumn dgvLine = new DataGridViewTextBoxColumn();
             {
-                MessageBox.Show("You need to select some text to see info.", "Line Info");
+                dgvLine.HeaderText = "Line";
+                dgvLine.DisplayIndex = 0;
+                dgvLine.Width = 34;
+                dgvLine.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvLine.ReadOnly = true;
+                dgvLine.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+            DataGridViewTextBoxColumn dgvText = new DataGridViewTextBoxColumn();
+            {
+                dgvText.HeaderText = "Text";
+                dgvText.DisplayIndex = 1;
+                dgvText.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvText.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+
+            dataGridView1.Columns.Add(dgvLine);
+            dataGridView1.Columns.Add(dgvText);
+
+            dataGridView1.Rows.Add(textArray.Length);
+
+            for (int i = 0; i < textArray.Length; i++)
+            {
+                dataGridView1.Rows[i].Cells[0].Value = i;
+                dataGridView1.Rows[i].Cells[1].Value = textArray[i];
+            }
+            dataGridView1.ResumeLayout();
+            dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
         }
     }
 }
