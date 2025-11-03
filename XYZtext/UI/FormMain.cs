@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Forms;
 using xyztext.UI.Theme;
+using xyztext.UI;
 
 namespace xyztext
 {
@@ -40,6 +41,7 @@ namespace xyztext
                 "Step 1: Load a folder containing text files.",
                 "Step 2: The text from the files will be displayed here.",
                 "Step 3: Use the ComboBox to select which text entry to edit.",
+                "Step 4: Please add a star on this project on GitHub if you like it! :)",
                 "",
                 "Enjoy using XYZtext! Created by MrEffect"
             });
@@ -1105,6 +1107,49 @@ namespace xyztext
             }
             dataGridView1.ResumeLayout();
             dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
+        }
+
+        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenSearchForm();
+        }
+
+        private void OpenSearchForm()
+        {
+            var searchForm = new SearchForm();
+
+            searchForm.SearchRequested += OnSearchRequested;
+
+            searchForm.Show(this);
+        }
+
+        private void OnSearchRequested(object sender, SearchEventArgs e)
+        {
+            var textBox = RTB_Text;
+            string text = textBox.Text;
+            int startIndex = textBox.SelectionStart;
+            int index;
+
+            if (e.Forward)
+            {
+                index = text.IndexOf(e.Term, startIndex + textBox.SelectionLength, StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                index = text.LastIndexOf(e.Term, startIndex, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (index >= 0)
+            {
+                textBox.Selection.Start = textBox.PositionToPlace(index);
+                textBox.Selection.End = textBox.PositionToPlace(index + e.Term.Length);
+                textBox.DoSelectionVisible();
+                textBox.Focus();
+            }
+            else
+            {
+                MessageBox.Show($"'{e.Term}' not found.", "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

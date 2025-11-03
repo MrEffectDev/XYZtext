@@ -3,12 +3,38 @@
   "WorkspaceRootPath": "D:\\Projects\\XYZtext\\XYZtext\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|d:\\projects\\xyztext\\xyztext\\xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|XYZtext||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\ui\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\ui\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\ui\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\ui\\searchform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\ui\\searchform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\ui\\searchform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\utils\\textsearchhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\utils\\textsearchhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|d:\\projects\\xyztext\\xyztext\\xyztext\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|5e9a8ac2-4f34-4521-858f-4c248ba31532"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,19 +57,89 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "XYZtext",
+              "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\XYZtext.csproj",
+              "RelativeDocumentMoniker": "XYZtext\\XYZtext.csproj",
+              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\XYZtext.csproj",
+              "RelativeToolTip": "XYZtext\\XYZtext.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-11-02T18:18:17.368Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SearchForm.Designer.cs",
+              "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\SearchForm.Designer.cs",
+              "RelativeDocumentMoniker": "XYZtext\\UI\\SearchForm.Designer.cs",
+              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\SearchForm.Designer.cs",
+              "RelativeToolTip": "XYZtext\\UI\\SearchForm.Designer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-02T18:02:22.143Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "SearchForm.cs",
+              "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\SearchForm.cs",
+              "RelativeDocumentMoniker": "XYZtext\\UI\\SearchForm.cs",
+              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\SearchForm.cs",
+              "RelativeToolTip": "XYZtext\\UI\\SearchForm.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABoAAABaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-02T18:02:16.946Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SearchForm.cs [Design]",
+              "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\SearchForm.cs",
+              "RelativeDocumentMoniker": "XYZtext\\UI\\SearchForm.cs",
+              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\SearchForm.cs [Design]",
+              "RelativeToolTip": "XYZtext\\UI\\SearchForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-02T18:01:48.978Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "app.config",
+              "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\app.config",
+              "RelativeDocumentMoniker": "XYZtext\\app.config",
+              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\app.config",
+              "RelativeToolTip": "XYZtext\\app.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-11-02T17:52:43.49Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TextSearchHelper.cs",
+              "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\Utils\\TextSearchHelper.cs",
+              "RelativeDocumentMoniker": "XYZtext\\Utils\\TextSearchHelper.cs",
+              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\Utils\\TextSearchHelper.cs",
+              "RelativeToolTip": "XYZtext\\Utils\\TextSearchHelper.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAowCMAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-02T17:52:42.097Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "FormMain.cs",
               "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\FormMain.cs",
               "RelativeDocumentMoniker": "XYZtext\\UI\\FormMain.cs",
               "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\FormMain.cs",
               "RelativeToolTip": "XYZtext\\UI\\FormMain.cs",
-              "ViewState": "AgIAAAoEAAAAAAAAAAAqwFUEAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAFcEAAAAAAAAAADwv1sEAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T00:26:52.843Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-21T00:26:52.843Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "FormMain.cs [Design]",
               "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\FormMain.cs",
               "RelativeDocumentMoniker": "XYZtext\\UI\\FormMain.cs",

@@ -57,6 +57,7 @@
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.RTB_Text = new FastColoredTextBoxNS.FastColoredTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -91,11 +92,12 @@
             this.fileToolStripMenuItem,
             this.menu_Tools,
             this.settingsToolStripMenuItem,
+            this.searchToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(634, 22);
+            this.menuStrip1.Size = new System.Drawing.Size(634, 23);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -239,28 +241,28 @@
             // githubToolStripMenuItem
             // 
             this.githubToolStripMenuItem.Name = "githubToolStripMenuItem";
-            this.githubToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.githubToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.githubToolStripMenuItem.Text = "Github";
             this.githubToolStripMenuItem.Click += new System.EventHandler(this.OpenGithubPage);
             // 
             // youtubeToolStripMenuItem
             // 
             this.youtubeToolStripMenuItem.Name = "youtubeToolStripMenuItem";
-            this.youtubeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.youtubeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.youtubeToolStripMenuItem.Text = "Youtube";
             this.youtubeToolStripMenuItem.Click += new System.EventHandler(this.OpenYoutubePage);
             // 
             // supportMeToolStripMenuItem
             // 
             this.supportMeToolStripMenuItem.Name = "supportMeToolStripMenuItem";
-            this.supportMeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.supportMeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.supportMeToolStripMenuItem.Text = "Support me ♡";
             this.supportMeToolStripMenuItem.Click += new System.EventHandler(this.OpenSupportPage);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -291,12 +293,13 @@
         '\"',
         '\'',
         '\''};
-            this.RTB_Text.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+            this.RTB_Text.AutoScrollMinSize = new System.Drawing.Size(2, 14);
             this.RTB_Text.BackBrush = null;
             this.RTB_Text.CharHeight = 14;
             this.RTB_Text.CharWidth = 8;
             this.RTB_Text.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.RTB_Text.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.RTB_Text.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.RTB_Text.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RTB_Text.IndentBackColor = System.Drawing.Color.Transparent;
             this.RTB_Text.IsReplaceMode = false;
@@ -329,7 +332,14 @@
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.Visible = false;
             // 
-            // Form1
+            // searchToolStripMenuItem
+            // 
+            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(61, 18);
+            this.searchToolStripMenuItem.Text = "Search";
+            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+            // 
+            // FormMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -345,7 +355,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(400, 300);
-            this.Name = "Form1";
+            this.Name = "FormMain";
             this.Text = "XYZtext";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -386,6 +396,7 @@
         private System.Windows.Forms.ToolStripMenuItem lineInfoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gridViewToolStripMenuItem;
         public System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
     }
 }
 
