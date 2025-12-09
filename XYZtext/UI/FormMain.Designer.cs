@@ -49,6 +49,7 @@
             this.whiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ignoreInvalidVariablesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.githubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.youtubeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +58,6 @@
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.RTB_Text = new FastColoredTextBoxNS.FastColoredTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -97,7 +97,7 @@
             this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(634, 23);
+            this.menuStrip1.Size = new System.Drawing.Size(634, 22);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -114,21 +114,21 @@
             // menu_openFolder
             // 
             this.menu_openFolder.Name = "menu_openFolder";
-            this.menu_openFolder.Size = new System.Drawing.Size(179, 22);
+            this.menu_openFolder.Size = new System.Drawing.Size(180, 22);
             this.menu_openFolder.Text = "Open folder";
             this.menu_openFolder.Click += new System.EventHandler(this.openFolder_Click);
             // 
             // importFromTXTToolStripMenuItem1
             // 
             this.importFromTXTToolStripMenuItem1.Name = "importFromTXTToolStripMenuItem1";
-            this.importFromTXTToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
+            this.importFromTXTToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.importFromTXTToolStripMenuItem1.Text = "Import from TXT";
             this.importFromTXTToolStripMenuItem1.Click += new System.EventHandler(this.ImportTXT_Click);
             // 
             // unloadFilesToolStripMenuItem
             // 
             this.unloadFilesToolStripMenuItem.Name = "unloadFilesToolStripMenuItem";
-            this.unloadFilesToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.unloadFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.unloadFilesToolStripMenuItem.Text = "Unload files";
             this.unloadFilesToolStripMenuItem.Click += new System.EventHandler(this.unloadFilesToolStripMenuItem_Click);
             // 
@@ -227,6 +227,13 @@
             this.gridViewToolStripMenuItem.Text = "Grid view";
             this.gridViewToolStripMenuItem.Click += new System.EventHandler(this.gridViewToolStripMenuItem_Click);
             // 
+            // searchToolStripMenuItem
+            // 
+            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(61, 18);
+            this.searchToolStripMenuItem.Text = "Search";
+            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -241,28 +248,28 @@
             // githubToolStripMenuItem
             // 
             this.githubToolStripMenuItem.Name = "githubToolStripMenuItem";
-            this.githubToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.githubToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.githubToolStripMenuItem.Text = "Github";
             this.githubToolStripMenuItem.Click += new System.EventHandler(this.OpenGithubPage);
             // 
             // youtubeToolStripMenuItem
             // 
             this.youtubeToolStripMenuItem.Name = "youtubeToolStripMenuItem";
-            this.youtubeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.youtubeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.youtubeToolStripMenuItem.Text = "Youtube";
             this.youtubeToolStripMenuItem.Click += new System.EventHandler(this.OpenYoutubePage);
             // 
             // supportMeToolStripMenuItem
             // 
             this.supportMeToolStripMenuItem.Name = "supportMeToolStripMenuItem";
-            this.supportMeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.supportMeToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.supportMeToolStripMenuItem.Text = "Support me ♡";
             this.supportMeToolStripMenuItem.Click += new System.EventHandler(this.OpenSupportPage);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -331,13 +338,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(634, 307);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.Visible = false;
-            // 
-            // searchToolStripMenuItem
-            // 
-            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(61, 18);
-            this.searchToolStripMenuItem.Text = "Search";
-            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
             // FormMain
             // 

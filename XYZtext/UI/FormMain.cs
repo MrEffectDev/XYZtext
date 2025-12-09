@@ -41,7 +41,7 @@ namespace xyztext
                 "Step 1: Load a folder containing text files.",
                 "Step 2: The text from the files will be displayed here.",
                 "Step 3: Use the ComboBox to select which text entry to edit.",
-                "Step 4: Please add a star on this project on GitHub if you like it! :)",
+                "Step 4: Please add a star on this project on GitHub if you like it! :3",
                 "",
                 "Enjoy using XYZtext! Created by MrEffect"
             });
@@ -421,13 +421,12 @@ namespace xyztext
                             for (int j = 0; j < lines[i].Length; j++)
                             {
                                 ushort val = lines[i][j];
-
                                 // Handle special text characters
                                 // Private Use Area characters
-                                if (val == 0x202F) val = 0xE07F;        // nbsp
-                                else if (val == 0x2026) val = 0xE08D;   // …
-                                else if (val == 0x2642) val = 0xE08E;   // ♂
-                                else if (val == 0x2640) val = 0xE08F;   // ♀
+                                if (val == 202F) val = 0xE07F;        // nbsp
+                                else if (val == 2026) val = 0xE08D;   // …
+                                else if (val == 2642) val = 0xE08E;   // ♂
+                                else if (val == 2640) val = 0xE08F;   // ♀
 
                                 // Variables
                                 else if (val == '[' || val == '\\')          // Variable
