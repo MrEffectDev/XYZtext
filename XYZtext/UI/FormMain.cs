@@ -441,7 +441,7 @@ namespace xyztext
                         // Write the lineOffset and charCount to the header.
                         bw.Write((uint)(pos + 0x4 + lines.Length * 8));
                         bw.Write((uint)(data.Position - pos) / 2);
-                        if (data.Position % 4 > 0) bz.Write((ushort)0);
+                        if (data.Position % 4 != 0) bz.Write((ushort)0);
 
                         // Increment the line initial key for the next line.
                         baseKey += 0x2983;

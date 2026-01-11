@@ -14,7 +14,7 @@
       "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|d:\\projects\\xyztext\\xyztext\\xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|D:\\Projects\\XYZtext\\XYZtext\\xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FCF23AC5-FB83-437F-91B5-FB30EB67E85E}|XYZtext\\XYZtext.csproj|solutionrelative:xyztext\\ui\\formmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -67,8 +67,7 @@
               "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\FormMain.resx",
               "RelativeToolTip": "XYZtext\\UI\\FormMain.resx",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
-              "WhenOpened": "2025-12-07T19:10:48.941Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-07T19:10:48.941Z"
             },
             {
               "$type": "Document",
@@ -128,8 +127,7 @@
               "RelativeToolTip": "XYZtext\\UI\\FormMain.cs",
               "ViewState": "AgIAAGkEAAAAAAAAAAAYwIAEAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T00:26:52.843Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-21T00:26:52.843Z"
             },
             {
               "$type": "Document",
@@ -140,8 +138,7 @@
               "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\UI\\FormMain.cs [Design]",
               "RelativeToolTip": "XYZtext\\UI\\FormMain.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-21T00:16:18.658Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-10-21T00:16:18.658Z"
             },
             {
               "$type": "Document",
@@ -149,8 +146,8 @@
               "Title": "XYZtext",
               "DocumentMoniker": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\XYZtext.csproj",
               "RelativeDocumentMoniker": "XYZtext\\XYZtext.csproj",
-              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\XYZtext.csproj",
-              "RelativeToolTip": "XYZtext\\XYZtext.csproj",
+              "ToolTip": "D:\\Projects\\XYZtext\\XYZtext\\XYZtext\\XYZtext.csproj*",
+              "RelativeToolTip": "XYZtext\\XYZtext.csproj*",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2025-11-02T18:18:17.368Z",
               "EditorCaption": ""
@@ -165,8 +162,7 @@
               "RelativeToolTip": "XYZtext\\UI\\FormMain.Designer.cs",
               "ViewState": "AgIAAOQAAAAAAAAAAAAowC4BAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-07T19:10:50.194Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-07T19:10:50.194Z"
             }
           ]
         }
