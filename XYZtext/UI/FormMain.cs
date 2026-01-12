@@ -1,6 +1,7 @@
 ﻿//10.16.2025 OMG THIS CODE IS SHIT, I CAN'T BELIVE I WROTE LIKE THIS 2 YEARS AGO
 //It'll be a complex task to rewrite it all. Plus there's a big part of this code by xytext dev
-//10.21.2025 Code refactoring will be later.
+//10.21.2025 Code refactoring will be later. 
+//1.13.2026 I ain't gonna rewrite this shit 
 
 using System;
 using System.Collections.Generic;
@@ -29,14 +30,14 @@ namespace xyztext
 
         public FormMain()
         {
-            this.DragEnter += new DragEventHandler(file_DragEnter);
-            this.DragDrop += new DragEventHandler(file_DragDrop);
+            this.DragEnter += new DragEventHandler(File_DragEnter);
+            this.DragDrop += new DragEventHandler(File_DragDrop);
             InitializeComponent();
             ShowAboutAppMessage();
             _themeManager = new ThemeManager();
             SetTheme();
             LoadConfig();
-            setStringsTextBox(new string[]
+            SetStringsTextBox(new string[]
             {
                 "Step 1: Load a folder containing text files.",
                 "Step 2: The text from the files will be displayed here.",
@@ -67,10 +68,11 @@ namespace xyztext
                 _isModified = true;
                 UpdateTitle();
             }
+            fileInfo.Text = $"Lines: {RTB_Text.Lines.Count()} Characters: {RTB_Text.Text.Length}"; //File lines validation coming soon
         }
 
         // IO
-        private void dumpTXT_Click(object sender, EventArgs e)
+        private void DumpTXT_Click(object sender, EventArgs e)
         {
             if (Files.Length == 0)
                 return;
@@ -99,7 +101,7 @@ namespace xyztext
                         for (int i = 0; i < Files.Length; i++)
                         {
                             string currentFile = Path.GetFileName(Files[i]);
-                            string[] data = getStringsFromFile(Files[i]);
+                            string[] data = GetStringsFromFile(Files[i]);
 
                             tw.WriteLine("~~~~~~~~~~~~~~~");
                             tw.WriteLine("File Name: " + currentFile);
@@ -205,7 +207,7 @@ namespace xyztext
             for (int i = 0; i < fileContents.Count; i++)
             {
                 RTB_Text.Text = fileContents[i];
-                bytes.Add(getBytesForFile(getCurrentTextBoxLines()));
+                bytes.Add(GetBytesForFile(GetCurrentTextBoxLines()));
             }
 
             // --- Part 3: export files with progress ---
@@ -233,29 +235,29 @@ namespace xyztext
                 System.Threading.Thread.Sleep(300);
                 progressForm.Close();
             }
-            openFolderPath(outputFolderPath);
+            OpenFolderPath(outputFolderPath);
             MessageBox.Show("All files exported successfully!", "Success");
         }
 
 
-        private void file_DragEnter(object sender, DragEventArgs e)
+        private void File_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
         }
-        private void file_DragDrop(object sender, DragEventArgs e)
+        private void File_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             string path = files[0]; // open first D&D
             if (Directory.Exists(path))
-                openFolderPath(path);
+                OpenFolderPath(path);
         }
-        private void changeEntry(object sender, EventArgs e)
+        private void ChangeEntry(object sender, EventArgs e)
         {
             string file = Files[CB_Entry.SelectedIndex];
-            string[] data = getStringsFromFile(file);
+            string[] data = GetStringsFromFile(file);
             _currentFileName = Path.GetFileName(Files[CB_Entry.SelectedIndex]);
 
-            setStringsTextBox(data);
+            SetStringsTextBox(data);
             SetStringsDataGridView(data);
 
             _isModified = false;
@@ -263,17 +265,17 @@ namespace xyztext
         }
         private void B_SaveText_Click(object sender, EventArgs e)
         {
-            File.WriteAllBytes(Files[CB_Entry.SelectedIndex], getBytesForFile(getCurrentTextBoxLines()));
+            File.WriteAllBytes(Files[CB_Entry.SelectedIndex], GetBytesForFile(GetCurrentTextBoxLines()));
             _isModified = false;
             UpdateTitle();
         }
-        private void openFolder_Click(object sender, EventArgs e)
+        private void OpenFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == DialogResult.OK)
-                openFolderPath(fbd.SelectedPath);
+                OpenFolderPath(fbd.SelectedPath);
         }
-        private void openFolderPath(string path)
+        private void OpenFolderPath(string path)
         {
             Files = Directory.GetFiles(path, "*.dat*", SearchOption.TopDirectoryOnly);
             if (Files.Length == 0)
@@ -303,7 +305,7 @@ namespace xyztext
             // Enable Dumping All Text
             menu_Tools.Enabled = true;
         }
-        private void setStringsTextBox(string[] textArray)
+        private void SetStringsTextBox(string[] textArray)
         {
             if (textArray == null) // Error handling for bad inputs.
                 return;
@@ -318,14 +320,14 @@ namespace xyztext
             RTB_Text.Text = RTB_Text.Text.TrimEnd('\r', '\n');
         }
 
-        private string[] getCurrentTextBoxLines()
+        private string[] GetCurrentTextBoxLines()
         {
             string[] lines = RTB_Text.Lines.ToArray();
             return lines;
         }
 
         // Top Level Functions
-        private string[] getStringsFromFile(string path)
+        private string[] GetStringsFromFile(string path)
         {
             byte[] data = File.ReadAllBytes(path);
             ushort textSections = BitConverter.ToUInt16(data, 0);
@@ -362,12 +364,12 @@ namespace xyztext
 
                 while (offset < start + length * 2) // loop through the entire text line
                 {
-                    decryptU16(data, ref offset, ref c, ref k);
+                    DecryptU16(data, ref offset, ref c, ref k);
                     if (c == 0)             // Terminated Line
                         break;
                     else if (c == '\n') s += "\\n";
                     else if (c == 0x10)     // Variable
-                        decryptVar(data, ref offset, ref s, ref c, ref k);
+                        DecryptVar(data, ref offset, ref s, ref c, ref k);
                     else                    // Regular Character
                     {
                         // Check special characters...
@@ -390,7 +392,7 @@ namespace xyztext
             return result;
         }
 
-        private byte[] getBytesForFile(string[] lines)
+        private byte[] GetBytesForFile(string[] lines)
         {
 
             using (MemoryStream textFile = new MemoryStream())
@@ -430,12 +432,12 @@ namespace xyztext
 
                                 // Variables
                                 else if (val == '[' || val == '\\')          // Variable
-                                    encryptVar(bz, lines[i], ref j, ref key);
+                                    EncryptVar(bz, lines[i], ref j, ref key);
 
                                 // Text
-                                else bz.Write(encryptU16(val, ref key));
+                                else bz.Write(EncryptU16(val, ref key));
                             }
-                            bz.Write(encryptU16(0, ref key)); // Add the null terminator, after encrypting it.
+                            bz.Write(EncryptU16(0, ref key)); // Add the null terminator, after encrypting it.
                         }
 
                         // Write the lineOffset and charCount to the header.
@@ -459,13 +461,13 @@ namespace xyztext
             }
         }
 
-        private ushort encryptU16(ushort val, ref ushort key)
+        private ushort EncryptU16(ushort val, ref ushort key)
         {
             val = (ushort)(key ^ val);
             key = (ushort)(((key << 3) | (key >> 13)) & 0xffff);
             return val;
         }
-        private ushort decryptU16(byte[] data, ref int offset, ref ushort val, ref ushort key)
+        private ushort DecryptU16(byte[] data, ref int offset, ref ushort val, ref ushort key)
         {
             val = (ushort)(BitConverter.ToUInt16(data, offset) ^ key);
             offset += 2;
@@ -473,7 +475,7 @@ namespace xyztext
             return val;
         }
         // Variable Handling
-        private ushort getVariableBytes(string varType, ref List<ushort> args)
+        private ushort GetVariableBytes(string varType, ref List<ushort> args)
         {
             // Fetch the variable name...
             int bracket = varType.Count(c => c == '(') > 0 ? varType.IndexOf('(') : 0;
@@ -546,26 +548,26 @@ namespace xyztext
             // All done.
             return varVal;
         }
-        private void encryptVar(BinaryWriter bw, string line, ref int i, ref ushort key)
+        private void EncryptVar(BinaryWriter bw, string line, ref int i, ref ushort key)
         {
             ushort val = line[i];
             if (val == '\\')        // Line Break
                 if (line[i + 1] == 'n')
                 {
                     i++;
-                    bw.Write(encryptU16('\n', ref key));
+                    bw.Write(EncryptU16('\n', ref key));
                 }
                 else if (line[i + 1] == 'r')
                 {
-                    bw.Write(encryptU16(0x10, ref key)); i++;
-                    bw.Write(encryptU16(1, ref key));
-                    bw.Write(encryptU16(0xBE00, ref key));
+                    bw.Write(EncryptU16(0x10, ref key)); i++;
+                    bw.Write(EncryptU16(1, ref key));
+                    bw.Write(EncryptU16(0xBE00, ref key));
                 }
                 else if (line[i + 1] == 'c')
                 {
-                    bw.Write(encryptU16(0x10, ref key)); i++;
-                    bw.Write(encryptU16(1, ref key));
-                    bw.Write(encryptU16(0xBE01, ref key));
+                    bw.Write(EncryptU16(0x10, ref key)); i++;
+                    bw.Write(EncryptU16(1, ref key));
+                    bw.Write(EncryptU16(0xBE01, ref key));
                 }
                 else { throw new Exception($"Invalid completed string! On the line:\n{line}"); }
             else if (val == '[')    // Special Variable
@@ -603,7 +605,7 @@ namespace xyztext
                             }
                         case "VAR":     // Text Variable
                             {
-                                varValue = getVariableBytes(varType, ref args);
+                                varValue = GetVariableBytes(varType, ref args);
                                 break;
                             }
                         default: throw new Exception("Unknown variable method type!");
@@ -616,22 +618,22 @@ namespace xyztext
                 }
 
                 // Write the Variable prefix.
-                bw.Write(encryptU16(0x0010, ref key));
+                bw.Write(EncryptU16(0x0010, ref key));
                 // Write Length of the following Variable Data
-                bw.Write(encryptU16((ushort)(1 + args.Count), ref key));
+                bw.Write(EncryptU16((ushort)(1 + args.Count), ref key));
                 // Write the Variable type.
-                bw.Write(encryptU16(varValue, ref key));
+                bw.Write(EncryptU16(varValue, ref key));
 
                 for (int j = 0; j < args.Count; j++)
-                    bw.Write(encryptU16((ushort)args[j], ref key));
+                    bw.Write(EncryptU16((ushort)args[j], ref key));
 
                 // Done.
             }
         }
-        private void decryptVar(byte[] d, ref int o, ref string s, ref ushort v, ref ushort k)
+        private void DecryptVar(byte[] d, ref int o, ref string s, ref ushort v, ref ushort k)
         {
-            ushort length = decryptU16(d, ref o, ref v, ref k);
-            ushort varType = decryptU16(d, ref o, ref v, ref k);
+            ushort length = DecryptU16(d, ref o, ref v, ref k);
+            ushort varType = DecryptU16(d, ref o, ref v, ref k);
             switch (varType)
             {
                 // Check the nonvariable types...
@@ -640,9 +642,9 @@ namespace xyztext
                 case 0xBE01: // "Waitbutton then clear text;; \c"
                     { s += "\\c"; return; }
                 case 0xBE02: // Dramatic pause for a text line. New!
-                    { s += "[WAIT " + decryptU16(d, ref o, ref v, ref k).ToString() + "]"; return; }
+                    { s += "[WAIT " + DecryptU16(d, ref o, ref v, ref k).ToString() + "]"; return; }
                 case 0xBDFF: // Empty Text line? Includes linenum so maybe for betatest finding used-unused lines?
-                    { s += "[~ " + decryptU16(d, ref o, ref v, ref k).ToString() + "]"; return; }
+                    { s += "[~ " + DecryptU16(d, ref o, ref v, ref k).ToString() + "]"; return; }
 
                 // Else a text variable, so let's loop through all the variable types. If we cannot find it, we just write the u16 val.
                 default:
@@ -708,7 +710,7 @@ namespace xyztext
                             while (length > 1)
                             {
                                 // Write arguments
-                                ushort arg = decryptU16(d, ref o, ref v, ref k);
+                                ushort arg = DecryptU16(d, ref o, ref v, ref k);
                                 length--;
                                 s += arg.ToString("X4");
                                 if (length == 1) break;
@@ -1041,7 +1043,7 @@ namespace xyztext
             dataGridView1.Visible = !RTB_Text.Visible;
             if (gridViewToolStripMenuItem.Checked)
             {
-                SetStringsDataGridView(getCurrentTextBoxLines());
+                SetStringsDataGridView(GetCurrentTextBoxLines());
             }
         }
 
