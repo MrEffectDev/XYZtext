@@ -58,6 +58,7 @@
             this.CB_Entry = new System.Windows.Forms.ComboBox();
             this.RTB_Text = new FastColoredTextBoxNS.FastColoredTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.fileInfo = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -114,21 +115,21 @@
             // menu_openFolder
             // 
             this.menu_openFolder.Name = "menu_openFolder";
-            this.menu_openFolder.Size = new System.Drawing.Size(180, 22);
+            this.menu_openFolder.Size = new System.Drawing.Size(179, 22);
             this.menu_openFolder.Text = "Open folder";
-            this.menu_openFolder.Click += new System.EventHandler(this.openFolder_Click);
+            this.menu_openFolder.Click += new System.EventHandler(this.OpenFolder_Click);
             // 
             // importFromTXTToolStripMenuItem1
             // 
             this.importFromTXTToolStripMenuItem1.Name = "importFromTXTToolStripMenuItem1";
-            this.importFromTXTToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.importFromTXTToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
             this.importFromTXTToolStripMenuItem1.Text = "Import from TXT";
             this.importFromTXTToolStripMenuItem1.Click += new System.EventHandler(this.ImportTXT_Click);
             // 
             // unloadFilesToolStripMenuItem
             // 
             this.unloadFilesToolStripMenuItem.Name = "unloadFilesToolStripMenuItem";
-            this.unloadFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unloadFilesToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.unloadFilesToolStripMenuItem.Text = "Unload files";
             this.unloadFilesToolStripMenuItem.Click += new System.EventHandler(this.unloadFilesToolStripMenuItem_Click);
             // 
@@ -150,7 +151,7 @@
             this.menu_DumpTXT.Name = "menu_DumpTXT";
             this.menu_DumpTXT.Size = new System.Drawing.Size(242, 22);
             this.menu_DumpTXT.Text = "Export files to TXT";
-            this.menu_DumpTXT.Click += new System.EventHandler(this.dumpTXT_Click);
+            this.menu_DumpTXT.Click += new System.EventHandler(this.DumpTXT_Click);
             // 
             // SplitTextToolStripMenuItem
             // 
@@ -281,7 +282,7 @@
             this.CB_Entry.Name = "CB_Entry";
             this.CB_Entry.Size = new System.Drawing.Size(203, 21);
             this.CB_Entry.TabIndex = 5;
-            this.CB_Entry.SelectedIndexChanged += new System.EventHandler(this.changeEntry);
+            this.CB_Entry.SelectedIndexChanged += new System.EventHandler(this.ChangeEntry);
             // 
             // RTB_Text
             // 
@@ -300,13 +301,12 @@
         '\"',
         '\'',
         '\''};
-            this.RTB_Text.AutoScrollMinSize = new System.Drawing.Size(2, 14);
+            this.RTB_Text.AutoScrollMinSize = new System.Drawing.Size(27, 14);
             this.RTB_Text.BackBrush = null;
             this.RTB_Text.CharHeight = 14;
             this.RTB_Text.CharWidth = 8;
             this.RTB_Text.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.RTB_Text.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.RTB_Text.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.RTB_Text.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RTB_Text.IndentBackColor = System.Drawing.Color.Transparent;
             this.RTB_Text.IsReplaceMode = false;
@@ -315,7 +315,7 @@
             this.RTB_Text.Paddings = new System.Windows.Forms.Padding(0);
             this.RTB_Text.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.RTB_Text.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("RTB_Text.ServiceColors")));
-            this.RTB_Text.Size = new System.Drawing.Size(634, 306);
+            this.RTB_Text.Size = new System.Drawing.Size(634, 294);
             this.RTB_Text.TabIndex = 9;
             this.RTB_Text.Zoom = 100;
             // 
@@ -335,9 +335,18 @@
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataGridView1.ShowEditingIcon = false;
-            this.dataGridView1.Size = new System.Drawing.Size(634, 307);
+            this.dataGridView1.Size = new System.Drawing.Size(634, 295);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.Visible = false;
+            // 
+            // fileInfo
+            // 
+            this.fileInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.fileInfo.AutoSize = true;
+            this.fileInfo.Location = new System.Drawing.Point(0, 350);
+            this.fileInfo.Name = "fileInfo";
+            this.fileInfo.Size = new System.Drawing.Size(0, 13);
+            this.fileInfo.TabIndex = 10;
             // 
             // FormMain
             // 
@@ -345,6 +354,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 362);
+            this.Controls.Add(this.fileInfo);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.RTB_Text);
             this.Controls.Add(this.CB_Entry);
@@ -397,6 +407,7 @@
         private System.Windows.Forms.ToolStripMenuItem gridViewToolStripMenuItem;
         public System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
+        private System.Windows.Forms.Label fileInfo;
     }
 }
 
