@@ -73,7 +73,7 @@
             this.B_SaveText.TabIndex = 2;
             this.B_SaveText.Text = "Save";
             this.B_SaveText.UseVisualStyleBackColor = true;
-            this.B_SaveText.Click += new System.EventHandler(this.B_SaveText_Click);
+            this.B_SaveText.Click += new System.EventHandler(this.BSaveTextClick);
             // 
             // TB_Path
             // 
@@ -117,14 +117,14 @@
             this.menu_openFolder.Name = "menu_openFolder";
             this.menu_openFolder.Size = new System.Drawing.Size(179, 22);
             this.menu_openFolder.Text = "Open folder";
-            this.menu_openFolder.Click += new System.EventHandler(this.OpenFolder_Click);
+            this.menu_openFolder.Click += new System.EventHandler(this.OpenFolderClick);
             // 
             // importFromTXTToolStripMenuItem1
             // 
             this.importFromTXTToolStripMenuItem1.Name = "importFromTXTToolStripMenuItem1";
             this.importFromTXTToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
             this.importFromTXTToolStripMenuItem1.Text = "Import from TXT";
-            this.importFromTXTToolStripMenuItem1.Click += new System.EventHandler(this.ImportTXT_Click);
+            this.importFromTXTToolStripMenuItem1.Click += new System.EventHandler(this.ImportTXTClick);
             // 
             // unloadFilesToolStripMenuItem
             // 
@@ -151,7 +151,7 @@
             this.menu_DumpTXT.Name = "menu_DumpTXT";
             this.menu_DumpTXT.Size = new System.Drawing.Size(242, 22);
             this.menu_DumpTXT.Text = "Export files to TXT";
-            this.menu_DumpTXT.Click += new System.EventHandler(this.DumpTXT_Click);
+            this.menu_DumpTXT.Click += new System.EventHandler(this.DumpTXTClick);
             // 
             // SplitTextToolStripMenuItem
             // 
@@ -233,7 +233,7 @@
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
             this.searchToolStripMenuItem.Size = new System.Drawing.Size(61, 18);
             this.searchToolStripMenuItem.Text = "Search";
-            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+            this.searchToolStripMenuItem.Click += new System.EventHandler(this.SearchToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -301,12 +301,13 @@
         '\"',
         '\'',
         '\''};
-            this.RTB_Text.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+            this.RTB_Text.AutoScrollMinSize = new System.Drawing.Size(2, 14);
             this.RTB_Text.BackBrush = null;
             this.RTB_Text.CharHeight = 14;
             this.RTB_Text.CharWidth = 8;
             this.RTB_Text.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.RTB_Text.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.RTB_Text.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.RTB_Text.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RTB_Text.IndentBackColor = System.Drawing.Color.Transparent;
             this.RTB_Text.IsReplaceMode = false;
@@ -367,7 +368,6 @@
             this.MinimumSize = new System.Drawing.Size(400, 300);
             this.Name = "FormMain";
             this.Text = "XYZtext";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).EndInit();

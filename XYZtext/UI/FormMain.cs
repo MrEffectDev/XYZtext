@@ -30,8 +30,8 @@ namespace xyztext
 
         public FormMain()
         {
-            this.DragEnter += new DragEventHandler(File_DragEnter);
-            this.DragDrop += new DragEventHandler(File_DragDrop);
+            this.DragEnter += new DragEventHandler(FileDragEnter);
+            this.DragDrop += new DragEventHandler(FileDragDrop);
             InitializeComponent();
             ShowAboutAppMessage();
             _themeManager = new ThemeManager();
@@ -46,11 +46,11 @@ namespace xyztext
                 "",
                 "Enjoy using XYZtext! Created by MrEffect"
             });
-            dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
+            dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
             RTB_Text.TextChanged += OnTextChanged;
         }
 
-        private void DataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DataGridView1CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             ApplyDataGridViewChangesToTextBox();
         }
@@ -72,7 +72,7 @@ namespace xyztext
         }
 
         // IO
-        private void DumpTXT_Click(object sender, EventArgs e)
+        private void DumpTXTClick(object sender, EventArgs e)
         {
             if (Files.Length == 0)
                 return;
@@ -138,15 +138,39 @@ namespace xyztext
         }
 
 
-        private void ImportTXT_Click(object sender, EventArgs e)
+        private void ImportTXTClick(object sender, EventArgs e)
         {
             OpenFileDialog importDump = new OpenFileDialog();
             importDump.Filter = "Text File|*.txt";
-            DialogResult dialogResult = importDump.ShowDialog();
 
-            if (dialogResult != DialogResult.OK)
+            if (importDump.ShowDialog() != DialogResult.OK)
                 return;
 
+            ImportTXTFromPath(importDump.FileName);
+        }
+
+
+        private void FileDragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+        private void FileDragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            string path = files[0];
+
+            if (Directory.Exists(path))
+            {
+                OpenFolderPath(path);
+            }
+            else if (File.Exists(path) && Path.GetExtension(path).Equals(".txt", StringComparison.OrdinalIgnoreCase))
+            {
+                ImportTXTFromPath(path);
+            }
+        }
+
+        private void ImportTXTFromPath(string path)
+        {
             string outputFolderPath = "";
 
             using (var dialog = new CommonOpenFileDialog())
@@ -168,7 +192,6 @@ namespace xyztext
             //MessageBox.Show("Sometimes errors may occur; the program will attempt to handle them automatically. Just press OK(Will be fixed in new versions)", "Notice");
 
             // --- Part 1: read the file ---
-            string path = importDump.FileName;
             string[] lines = File.ReadAllLines(path);
             List<string> fileNames = new List<string>();
             List<string> fileContents = new List<string>();
@@ -239,18 +262,6 @@ namespace xyztext
             MessageBox.Show("All files exported successfully!", "Success");
         }
 
-
-        private void File_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
-        }
-        private void File_DragDrop(object sender, DragEventArgs e)
-        {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            string path = files[0]; // open first D&D
-            if (Directory.Exists(path))
-                OpenFolderPath(path);
-        }
         private void ChangeEntry(object sender, EventArgs e)
         {
             string file = Files[CB_Entry.SelectedIndex];
@@ -263,13 +274,13 @@ namespace xyztext
             _isModified = false;
             UpdateTitle();
         }
-        private void B_SaveText_Click(object sender, EventArgs e)
+        private void BSaveTextClick(object sender, EventArgs e)
         {
             File.WriteAllBytes(Files[CB_Entry.SelectedIndex], GetBytesForFile(GetCurrentTextBoxLines()));
             _isModified = false;
             UpdateTitle();
         }
-        private void OpenFolder_Click(object sender, EventArgs e)
+        private void OpenFolderClick(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == DialogResult.OK)
@@ -724,11 +735,6 @@ namespace xyztext
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void OpenGithubPage(object sender, EventArgs e)
         {
             string url = "https://github.com/MrEffectDev";
@@ -746,6 +752,7 @@ namespace xyztext
             string url = "https://boosty.to/mreffect";
             OpenBrowser(url);
         }
+
         private void OpenBrowser(string url)
         {
             try
@@ -1069,7 +1076,7 @@ namespace xyztext
 
         private void SetStringsDataGridView(string[] textArray)
         {
-            dataGridView1.CellValueChanged -= DataGridView1_CellValueChanged;
+            dataGridView1.CellValueChanged -= DataGridView1CellValueChanged;
             dataGridView1.SuspendLayout();
             dataGridView1.Rows.Clear();
 
@@ -1107,10 +1114,10 @@ namespace xyztext
                 dataGridView1.Rows[i].Cells[1].Value = textArray[i];
             }
             dataGridView1.ResumeLayout();
-            dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
+            dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
         }
 
-        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenSearchForm();
         }
