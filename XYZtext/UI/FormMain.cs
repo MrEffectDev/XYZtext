@@ -15,6 +15,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Forms;
 using xyztext.UI.Theme;
 using xyztext.UI;
+using xyztext.Utils.Validation;
 
 namespace xyztext
 {
@@ -27,11 +28,15 @@ namespace xyztext
         private bool _isModified = false;
         private string _currentFileName = "Null";
         private bool _ignoreInvalidVariables = false;
+        private readonly TextValidationService _textValidator = new TextValidationService();
+        private ValidationResult _validationResult;
+        private ToolTip _toolTip;
+        private ValidationForm _validationForm;
 
         public FormMain()
         {
-            this.DragEnter += new DragEventHandler(File_DragEnter);
-            this.DragDrop += new DragEventHandler(File_DragDrop);
+            this.DragEnter += new DragEventHandler(FileDragEnter);
+            this.DragDrop += new DragEventHandler(FileDragDrop);
             InitializeComponent();
             ShowAboutAppMessage();
             _themeManager = new ThemeManager();
@@ -46,11 +51,19 @@ namespace xyztext
                 "",
                 "Enjoy using XYZtext! Created by MrEffect"
             });
-            dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
+            dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
             RTB_Text.TextChanged += OnTextChanged;
+
+            _toolTip = new ToolTip
+            {
+                AutoPopDelay = 5000,
+                InitialDelay = 500,
+                ReshowDelay = 100,
+                ShowAlways = true
+            };
         }
 
-        private void DataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void DataGridView1CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             ApplyDataGridViewChangesToTextBox();
         }
@@ -68,11 +81,32 @@ namespace xyztext
                 _isModified = true;
                 UpdateTitle();
             }
-            fileInfo.Text = $"Lines: {RTB_Text.Lines.Count()} Characters: {RTB_Text.Text.Length}"; //File lines validation coming soon
+            fileInfo.Text = $"Lines: {RTB_Text.Lines.Count()} Characters: {RTB_Text.Text.Length}";
+
+            _validationResult = _textValidator.ValidateLines(GetCurrentTextBoxLines());
+            //Debug print in console
+            switch (_validationResult.Status)
+            {
+                case ValidationStatus.Green:
+                    ValidationPanel.BackgroundImage = Properties.Resources.OK;
+                    break;
+                case ValidationStatus.Yellow:
+                    ValidationPanel.BackgroundImage = Properties.Resources.Warning;
+                    break;
+                case ValidationStatus.Red:
+                    ValidationPanel.BackgroundImage = Properties.Resources.Error;
+                    break;
+            }
+
+            if (_validationForm != null && !_validationForm.IsDisposed)
+            {
+                _validationForm.UpdateResults(_validationResult);
+            }
+
         }
 
         // IO
-        private void DumpTXT_Click(object sender, EventArgs e)
+        private void DumpTXTClick(object sender, EventArgs e)
         {
             if (Files.Length == 0)
                 return;
@@ -138,15 +172,39 @@ namespace xyztext
         }
 
 
-        private void ImportTXT_Click(object sender, EventArgs e)
+        private void ImportTXTClick(object sender, EventArgs e)
         {
             OpenFileDialog importDump = new OpenFileDialog();
             importDump.Filter = "Text File|*.txt";
-            DialogResult dialogResult = importDump.ShowDialog();
 
-            if (dialogResult != DialogResult.OK)
+            if (importDump.ShowDialog() != DialogResult.OK)
                 return;
 
+            ImportTXTFromPath(importDump.FileName);
+        }
+
+
+        private void FileDragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+        private void FileDragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            string path = files[0];
+
+            if (Directory.Exists(path))
+            {
+                OpenFolderPath(path);
+            }
+            else if (File.Exists(path) && Path.GetExtension(path).Equals(".txt", StringComparison.OrdinalIgnoreCase))
+            {
+                ImportTXTFromPath(path);
+            }
+        }
+
+        private void ImportTXTFromPath(string path)
+        {
             string outputFolderPath = "";
 
             using (var dialog = new CommonOpenFileDialog())
@@ -165,10 +223,7 @@ namespace xyztext
                 }
             }
 
-            //MessageBox.Show("Sometimes errors may occur; the program will attempt to handle them automatically. Just press OK(Will be fixed in new versions)", "Notice");
-
             // --- Part 1: read the file ---
-            string path = importDump.FileName;
             string[] lines = File.ReadAllLines(path);
             List<string> fileNames = new List<string>();
             List<string> fileContents = new List<string>();
@@ -239,18 +294,6 @@ namespace xyztext
             MessageBox.Show("All files exported successfully!", "Success");
         }
 
-
-        private void File_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
-        }
-        private void File_DragDrop(object sender, DragEventArgs e)
-        {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            string path = files[0]; // open first D&D
-            if (Directory.Exists(path))
-                OpenFolderPath(path);
-        }
         private void ChangeEntry(object sender, EventArgs e)
         {
             string file = Files[CB_Entry.SelectedIndex];
@@ -263,13 +306,13 @@ namespace xyztext
             _isModified = false;
             UpdateTitle();
         }
-        private void B_SaveText_Click(object sender, EventArgs e)
+        private void BSaveTextClick(object sender, EventArgs e)
         {
             File.WriteAllBytes(Files[CB_Entry.SelectedIndex], GetBytesForFile(GetCurrentTextBoxLines()));
             _isModified = false;
             UpdateTitle();
         }
-        private void OpenFolder_Click(object sender, EventArgs e)
+        private void OpenFolderClick(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == DialogResult.OK)
@@ -724,11 +767,6 @@ namespace xyztext
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void OpenGithubPage(object sender, EventArgs e)
         {
             string url = "https://github.com/MrEffectDev";
@@ -746,6 +784,7 @@ namespace xyztext
             string url = "https://boosty.to/mreffect";
             OpenBrowser(url);
         }
+
         private void OpenBrowser(string url)
         {
             try
@@ -802,7 +841,7 @@ namespace xyztext
             }
         }
 
-        private void trimLineToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TrimLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
             {
@@ -822,7 +861,7 @@ namespace xyztext
             }
         }
 
-        private void lineInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LineInfoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
             {
@@ -900,7 +939,7 @@ namespace xyztext
         }
 
 
-        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DarkToolStripMenuItemClick(object sender, EventArgs e)
         {
             string theme = "Dark";
             _themeManager.SetTheme(new Themes.Dark(), this);
@@ -909,7 +948,7 @@ namespace xyztext
             darkToolStripMenuItem.Checked = true;
             whiteToolStripMenuItem.Checked = false;
         }
-        private void whiteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void WhiteToolStripMenuItemClick(object sender, EventArgs e)
         {
             string theme = "White";
             _themeManager.SetTheme(new Themes.White(), this);
@@ -949,7 +988,7 @@ namespace xyztext
             }
         }
 
-        private void unloadFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UnloadFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Files = null;
 
@@ -986,12 +1025,12 @@ namespace xyztext
             );
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowAboutAppMessage();
         }
 
-        private void ignoreInvalidVariablesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void IgnoreInvalidVariablesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ignoreInvalidVariables = !_ignoreInvalidVariables;
             ignoreInvalidVariablesToolStripMenuItem.Checked = _ignoreInvalidVariables;
@@ -1036,7 +1075,7 @@ namespace xyztext
             }
         }
 
-        private void gridViewToolStripMenuItem_Click(object sender, EventArgs e)
+        private void GridViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             gridViewToolStripMenuItem.Checked = !gridViewToolStripMenuItem.Checked;
             RTB_Text.Visible = !gridViewToolStripMenuItem.Checked;
@@ -1069,7 +1108,7 @@ namespace xyztext
 
         private void SetStringsDataGridView(string[] textArray)
         {
-            dataGridView1.CellValueChanged -= DataGridView1_CellValueChanged;
+            dataGridView1.CellValueChanged -= DataGridView1CellValueChanged;
             dataGridView1.SuspendLayout();
             dataGridView1.Rows.Clear();
 
@@ -1107,10 +1146,10 @@ namespace xyztext
                 dataGridView1.Rows[i].Cells[1].Value = textArray[i];
             }
             dataGridView1.ResumeLayout();
-            dataGridView1.CellValueChanged += DataGridView1_CellValueChanged;
+            dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
         }
 
-        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenSearchForm();
         }
@@ -1150,6 +1189,72 @@ namespace xyztext
             else
             {
                 MessageBox.Show($"'{e.Term}' not found.", "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ValidationPanelMouseClick(object sender, MouseEventArgs e)
+        {
+            if (_validationForm == null || _validationForm.IsDisposed)
+            {
+                _validationForm = new ValidationForm(_validationResult);
+                _validationForm.Show(this);
+            }
+            else
+            {
+                _validationForm.Focus();
+            }
+        }
+
+        private void ValidationPanelMouseEnter(object sender, EventArgs e)
+        {
+            if (_validationResult == null)
+                return;
+
+            _toolTip.ToolTipTitle = "Validation status";
+
+            switch (_validationResult.Status)
+            {
+                case ValidationStatus.Green:
+                    _toolTip.ToolTipIcon = ToolTipIcon.Info;
+                    break;
+
+                case ValidationStatus.Yellow:
+                    _toolTip.ToolTipIcon = ToolTipIcon.Warning;
+                    break;
+
+                case ValidationStatus.Red:
+                    _toolTip.ToolTipIcon = ToolTipIcon.Error;
+                    break;
+
+                default:
+                    _toolTip.ToolTipIcon = ToolTipIcon.None;
+                    break;
+            }
+
+            _toolTip.SetToolTip(ValidationPanel, BuildValidationTooltipText());
+        }
+
+        private string BuildValidationTooltipText()
+        {
+            if (_validationResult == null)
+                return string.Empty;
+
+            int errorCount = _validationResult.ErrorLines.Count;
+            int warningCount = _validationResult.WarningLines.Count;
+
+            switch (_validationResult.Status)
+            {
+                case ValidationStatus.Green:
+                    return "✔ Everything is fine";
+
+                case ValidationStatus.Yellow:
+                    return "⚠ " + warningCount + " warning(s)\nClick to see more info";
+
+                case ValidationStatus.Red:
+                    return "❌ " + errorCount + " error(s)\nClick to see more info";
+
+                default:
+                    return string.Empty;
             }
         }
     }

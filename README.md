@@ -11,5 +11,6 @@
 * **Automatically Split Text** for better handling of long lines
 * **Remove Text Separation** to merge split lines
 * **Trim Line** to clean up whitespace automatically
+* **Text validation** to make sure there are no errors
 
 XYZtext is ideal for anyone who wants a modern, user-friendly tool to edit Pokémon game text files while keeping all the core functionality of XYText.

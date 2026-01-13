@@ -17,3 +17,4 @@ D:\Projects\XYZtext\XYZtext\XYZtext\obj\x86\Debug\XYZtext.csproj.Up2Date
 D:\Projects\XYZtext\XYZtext\XYZtext\obj\x86\Debug\XYZtext.exe
 D:\Projects\XYZtext\XYZtext\XYZtext\obj\x86\Debug\XYZtext.pdb
 D:\Projects\XYZtext\XYZtext\XYZtext\obj\x86\Debug\xyztext.UI.SearchForm.resources
+D:\Projects\XYZtext\XYZtext\XYZtext\obj\x86\Debug\xyztext.UI.ValidationForm.resources
