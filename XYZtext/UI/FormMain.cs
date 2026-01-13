@@ -15,6 +15,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Forms;
 using xyztext.UI.Theme;
 using xyztext.UI;
+using xyztext.Utils.Validation;
 
 namespace xyztext
 {
@@ -27,6 +28,10 @@ namespace xyztext
         private bool _isModified = false;
         private string _currentFileName = "Null";
         private bool _ignoreInvalidVariables = false;
+        private readonly TextValidationService _textValidator = new TextValidationService();
+        private ValidationResult _validationResult;
+        private ToolTip _toolTip;
+        private ValidationForm _validationForm;
 
         public FormMain()
         {
@@ -48,6 +53,14 @@ namespace xyztext
             });
             dataGridView1.CellValueChanged += DataGridView1CellValueChanged;
             RTB_Text.TextChanged += OnTextChanged;
+
+            _toolTip = new ToolTip
+            {
+                AutoPopDelay = 5000,
+                InitialDelay = 500,
+                ReshowDelay = 100,
+                ShowAlways = true
+            };
         }
 
         private void DataGridView1CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -68,7 +81,28 @@ namespace xyztext
                 _isModified = true;
                 UpdateTitle();
             }
-            fileInfo.Text = $"Lines: {RTB_Text.Lines.Count()} Characters: {RTB_Text.Text.Length}"; //File lines validation coming soon
+            fileInfo.Text = $"Lines: {RTB_Text.Lines.Count()} Characters: {RTB_Text.Text.Length}";
+
+            _validationResult = _textValidator.ValidateLines(GetCurrentTextBoxLines());
+            //Debug print in console
+            switch (_validationResult.Status)
+            {
+                case ValidationStatus.Green:
+                    ValidationPanel.BackgroundImage = Properties.Resources.OK;
+                    break;
+                case ValidationStatus.Yellow:
+                    ValidationPanel.BackgroundImage = Properties.Resources.Warning;
+                    break;
+                case ValidationStatus.Red:
+                    ValidationPanel.BackgroundImage = Properties.Resources.Error;
+                    break;
+            }
+
+            if (_validationForm != null && !_validationForm.IsDisposed)
+            {
+                _validationForm.UpdateResults(_validationResult);
+            }
+
         }
 
         // IO
@@ -188,8 +222,6 @@ namespace xyztext
                     return;
                 }
             }
-
-            //MessageBox.Show("Sometimes errors may occur; the program will attempt to handle them automatically. Just press OK(Will be fixed in new versions)", "Notice");
 
             // --- Part 1: read the file ---
             string[] lines = File.ReadAllLines(path);
@@ -809,7 +841,7 @@ namespace xyztext
             }
         }
 
-        private void trimLineToolStripMenuItem_Click(object sender, EventArgs e)
+        private void TrimLineToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
             {
@@ -829,7 +861,7 @@ namespace xyztext
             }
         }
 
-        private void lineInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LineInfoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (RTB_Text.Visible && RTB_Text.SelectionLength > 0)
             {
@@ -907,7 +939,7 @@ namespace xyztext
         }
 
 
-        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DarkToolStripMenuItemClick(object sender, EventArgs e)
         {
             string theme = "Dark";
             _themeManager.SetTheme(new Themes.Dark(), this);
@@ -916,7 +948,7 @@ namespace xyztext
             darkToolStripMenuItem.Checked = true;
             whiteToolStripMenuItem.Checked = false;
         }
-        private void whiteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void WhiteToolStripMenuItemClick(object sender, EventArgs e)
         {
             string theme = "White";
             _themeManager.SetTheme(new Themes.White(), this);
@@ -956,7 +988,7 @@ namespace xyztext
             }
         }
 
-        private void unloadFilesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UnloadFilesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Files = null;
 
@@ -993,12 +1025,12 @@ namespace xyztext
             );
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowAboutAppMessage();
         }
 
-        private void ignoreInvalidVariablesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void IgnoreInvalidVariablesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ignoreInvalidVariables = !_ignoreInvalidVariables;
             ignoreInvalidVariablesToolStripMenuItem.Checked = _ignoreInvalidVariables;
@@ -1043,7 +1075,7 @@ namespace xyztext
             }
         }
 
-        private void gridViewToolStripMenuItem_Click(object sender, EventArgs e)
+        private void GridViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             gridViewToolStripMenuItem.Checked = !gridViewToolStripMenuItem.Checked;
             RTB_Text.Visible = !gridViewToolStripMenuItem.Checked;
@@ -1157,6 +1189,72 @@ namespace xyztext
             else
             {
                 MessageBox.Show($"'{e.Term}' not found.", "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void ValidationPanelMouseClick(object sender, MouseEventArgs e)
+        {
+            if (_validationForm == null || _validationForm.IsDisposed)
+            {
+                _validationForm = new ValidationForm(_validationResult);
+                _validationForm.Show(this);
+            }
+            else
+            {
+                _validationForm.Focus();
+            }
+        }
+
+        private void ValidationPanelMouseEnter(object sender, EventArgs e)
+        {
+            if (_validationResult == null)
+                return;
+
+            _toolTip.ToolTipTitle = "Validation status";
+
+            switch (_validationResult.Status)
+            {
+                case ValidationStatus.Green:
+                    _toolTip.ToolTipIcon = ToolTipIcon.Info;
+                    break;
+
+                case ValidationStatus.Yellow:
+                    _toolTip.ToolTipIcon = ToolTipIcon.Warning;
+                    break;
+
+                case ValidationStatus.Red:
+                    _toolTip.ToolTipIcon = ToolTipIcon.Error;
+                    break;
+
+                default:
+                    _toolTip.ToolTipIcon = ToolTipIcon.None;
+                    break;
+            }
+
+            _toolTip.SetToolTip(ValidationPanel, BuildValidationTooltipText());
+        }
+
+        private string BuildValidationTooltipText()
+        {
+            if (_validationResult == null)
+                return string.Empty;
+
+            int errorCount = _validationResult.ErrorLines.Count;
+            int warningCount = _validationResult.WarningLines.Count;
+
+            switch (_validationResult.Status)
+            {
+                case ValidationStatus.Green:
+                    return "✔ Everything is fine";
+
+                case ValidationStatus.Yellow:
+                    return "⚠ " + warningCount + " warning(s)\nClick to see more info";
+
+                case ValidationStatus.Red:
+                    return "❌ " + errorCount + " error(s)\nClick to see more info";
+
+                default:
+                    return string.Empty;
             }
         }
     }

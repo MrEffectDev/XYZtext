@@ -59,6 +59,8 @@
             this.RTB_Text = new FastColoredTextBoxNS.FastColoredTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.fileInfo = new System.Windows.Forms.Label();
+            this.ValidationPanel = new System.Windows.Forms.Panel();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RTB_Text)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -131,7 +133,7 @@
             this.unloadFilesToolStripMenuItem.Name = "unloadFilesToolStripMenuItem";
             this.unloadFilesToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.unloadFilesToolStripMenuItem.Text = "Unload files";
-            this.unloadFilesToolStripMenuItem.Click += new System.EventHandler(this.unloadFilesToolStripMenuItem_Click);
+            this.unloadFilesToolStripMenuItem.Click += new System.EventHandler(this.UnloadFilesToolStripMenuItem_Click);
             // 
             // menu_Tools
             // 
@@ -172,14 +174,14 @@
             this.trimLineToolStripMenuItem.Name = "trimLineToolStripMenuItem";
             this.trimLineToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.trimLineToolStripMenuItem.Text = "Trim line";
-            this.trimLineToolStripMenuItem.Click += new System.EventHandler(this.trimLineToolStripMenuItem_Click);
+            this.trimLineToolStripMenuItem.Click += new System.EventHandler(this.TrimLineToolStripMenuItem_Click);
             // 
             // lineInfoToolStripMenuItem
             // 
             this.lineInfoToolStripMenuItem.Name = "lineInfoToolStripMenuItem";
             this.lineInfoToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.lineInfoToolStripMenuItem.Text = "Line info";
-            this.lineInfoToolStripMenuItem.Click += new System.EventHandler(this.lineInfoToolStripMenuItem_Click);
+            this.lineInfoToolStripMenuItem.Click += new System.EventHandler(this.LineInfoToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -205,28 +207,28 @@
             this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
             this.darkToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.darkToolStripMenuItem.Text = "Dark";
-            this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
+            this.darkToolStripMenuItem.Click += new System.EventHandler(this.DarkToolStripMenuItemClick);
             // 
             // whiteToolStripMenuItem
             // 
             this.whiteToolStripMenuItem.Name = "whiteToolStripMenuItem";
             this.whiteToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.whiteToolStripMenuItem.Text = "Light";
-            this.whiteToolStripMenuItem.Click += new System.EventHandler(this.whiteToolStripMenuItem_Click);
+            this.whiteToolStripMenuItem.Click += new System.EventHandler(this.WhiteToolStripMenuItemClick);
             // 
             // ignoreInvalidVariablesToolStripMenuItem
             // 
             this.ignoreInvalidVariablesToolStripMenuItem.Name = "ignoreInvalidVariablesToolStripMenuItem";
             this.ignoreInvalidVariablesToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.ignoreInvalidVariablesToolStripMenuItem.Text = "Ignore invalid variables";
-            this.ignoreInvalidVariablesToolStripMenuItem.Click += new System.EventHandler(this.ignoreInvalidVariablesToolStripMenuItem_Click);
+            this.ignoreInvalidVariablesToolStripMenuItem.Click += new System.EventHandler(this.IgnoreInvalidVariablesToolStripMenuItem_Click);
             // 
             // gridViewToolStripMenuItem
             // 
             this.gridViewToolStripMenuItem.Name = "gridViewToolStripMenuItem";
             this.gridViewToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.gridViewToolStripMenuItem.Text = "Grid view";
-            this.gridViewToolStripMenuItem.Click += new System.EventHandler(this.gridViewToolStripMenuItem_Click);
+            this.gridViewToolStripMenuItem.Click += new System.EventHandler(this.GridViewToolStripMenuItem_Click);
             // 
             // searchToolStripMenuItem
             // 
@@ -272,7 +274,7 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // CB_Entry
             // 
@@ -316,7 +318,7 @@
             this.RTB_Text.Paddings = new System.Windows.Forms.Padding(0);
             this.RTB_Text.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.RTB_Text.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("RTB_Text.ServiceColors")));
-            this.RTB_Text.Size = new System.Drawing.Size(634, 294);
+            this.RTB_Text.Size = new System.Drawing.Size(634, 280);
             this.RTB_Text.TabIndex = 9;
             this.RTB_Text.Zoom = 100;
             // 
@@ -336,7 +338,7 @@
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataGridView1.ShowEditingIcon = false;
-            this.dataGridView1.Size = new System.Drawing.Size(634, 295);
+            this.dataGridView1.Size = new System.Drawing.Size(634, 281);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.Visible = false;
             // 
@@ -349,12 +351,29 @@
             this.fileInfo.Size = new System.Drawing.Size(0, 13);
             this.fileInfo.TabIndex = 10;
             // 
+            // ValidationPanel
+            // 
+            this.ValidationPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ValidationPanel.BackgroundImage = global::xyztext.Properties.Resources.OK;
+            this.ValidationPanel.Location = new System.Drawing.Point(618, 342);
+            this.ValidationPanel.Name = "ValidationPanel";
+            this.ValidationPanel.Size = new System.Drawing.Size(16, 16);
+            this.ValidationPanel.TabIndex = 11;
+            this.ValidationPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ValidationPanelMouseClick);
+            this.ValidationPanel.MouseEnter += new System.EventHandler(this.ValidationPanelMouseEnter);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 362);
+            this.Controls.Add(this.ValidationPanel);
             this.Controls.Add(this.fileInfo);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.RTB_Text);
@@ -408,6 +427,8 @@
         public System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         private System.Windows.Forms.Label fileInfo;
+        private System.Windows.Forms.Panel ValidationPanel;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 
