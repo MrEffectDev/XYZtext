@@ -32,6 +32,8 @@ namespace xyztext
         private ValidationResult _validationResult;
         private ToolTip _toolTip;
         private ValidationForm _validationForm;
+        private Dictionary<string, ReferenceFile> _referenceFiles = new Dictionary<string, ReferenceFile>(StringComparer.OrdinalIgnoreCase);
+
 
         public FormMain()
         {
@@ -59,7 +61,8 @@ namespace xyztext
                 AutoPopDelay = 5000,
                 InitialDelay = 500,
                 ReshowDelay = 100,
-                ShowAlways = true
+                ShowAlways = true,
+                IsBalloon = true
             };
         }
 
@@ -83,8 +86,7 @@ namespace xyztext
             }
             fileInfo.Text = $"Lines: {RTB_Text.Lines.Count()} Characters: {RTB_Text.Text.Length}";
 
-            _validationResult = _textValidator.ValidateLines(GetCurrentTextBoxLines());
-            //Debug print in console
+            _validationResult = _textValidator.ValidateLines(GetCurrentTextBoxLines(), GetCurrentReferenceTextLines());
             switch (_validationResult.Status)
             {
                 case ValidationStatus.Green:
@@ -1256,6 +1258,118 @@ namespace xyztext
                 default:
                     return string.Empty;
             }
+        }
+
+        private void OpenRefenceFilesFoldeToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "Select the original .DAT files from another directory.\n\n" +
+                "These files will be used as a reference to ensure that the edited files\n" +
+                "have the same number of lines and required variables.",
+                "Reference files",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+
+            using (var dialog = new CommonOpenFileDialog())
+            {
+                dialog.IsFolderPicker = true;
+                dialog.Title = "Select the folder containing reference files";
+
+                if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
+                    return;
+
+                LoadReferenceFiles(dialog.FileName);
+            }
+        }
+
+        private void LoadReferenceFiles(string selectedPath)
+        {
+            _referenceFiles.Clear();
+
+            var currentFileNames = Files
+                .Select(Path.GetFileName)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var referenceFileNames = Directory
+                .GetFiles(selectedPath, "*.dat*", SearchOption.TopDirectoryOnly)
+                .Select(Path.GetFileName)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            string[] missingFiles = currentFileNames.Except(referenceFileNames).ToArray();
+            if (missingFiles.Length > 0)
+            {
+                MessageBox.Show(
+                    "Reference folder is missing the following files:\n\n" +
+                    string.Join("\n", missingFiles),
+                    "Reference files mismatch",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return;
+            }
+
+            string[] extraFiles = referenceFileNames.Except(currentFileNames).ToArray();
+            if (extraFiles.Length > 0)
+            {
+                MessageBox.Show(
+                    "Reference folder contains extra files not present in the current files list:\n\n" +
+                    string.Join("\n", extraFiles),
+                    "Reference files mismatch",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return;
+            }
+
+            foreach (var fileName in referenceFileNames)
+            {
+                string fullPath = Path.Combine(selectedPath, fileName);
+                string[] lines = GetStringsFromFile(fullPath);
+                if (lines == null)
+                {
+                    continue;
+                }
+
+                var referenceFile = new ReferenceFile(fileName, lines);
+                _referenceFiles[fileName] = referenceFile;
+            }
+
+            MessageBox.Show(
+                $"Reference files loaded successfully ({_referenceFiles.Count} files).",
+                "Reference files",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private ReferenceFile GetCurrentReferenceTextLines()
+        {
+            if (_referenceFiles == null || _referenceFiles.Count == 0)
+                return null;
+            if (string.IsNullOrEmpty(_currentFileName))
+                return null;
+            _referenceFiles.TryGetValue(_currentFileName, out ReferenceFile referenceFile);
+            return referenceFile;
+        }
+
+        private void ReferenceFilesToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            ReferenceFilesToolStripMenuItem.Checked = !ReferenceFilesToolStripMenuItem.Checked;
+            _textValidator.EnableReferenceFileAnalysis(ReferenceFilesToolStripMenuItem.Checked);
+            OnTextChanged(sender, e);
+        }
+
+        private void ClearReferencesToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            _referenceFiles.Clear();
+            OnTextChanged(sender, e);
+            MessageBox.Show("All reference files have been cleared.", "Reference files", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void MyWebsiteToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            OpenBrowser("https://mreffect.space");
         }
     }
 }

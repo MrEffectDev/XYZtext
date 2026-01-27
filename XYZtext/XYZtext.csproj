@@ -111,6 +111,7 @@
       <DependentUpon>ValidationLogs.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\TextSearchHelper.cs" />
+    <Compile Include="Utils\Validation\Reference\ReferenceFile.cs" />
     <Compile Include="Utils\Validation\TextValidationService.cs" />
     <Compile Include="Utils\Validation\ValidationMessage.cs" />
     <Compile Include="Utils\Validation\ValidationResult.cs" />

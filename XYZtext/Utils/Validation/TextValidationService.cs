@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace xyztext.Utils.Validation
 {
@@ -18,8 +19,16 @@ namespace xyztext.Utils.Validation
             "ITEMPLUR0","ITEMPLUR1","GENDBR","NUMBRNCH","iCOLOR2","iCOLOR3","NUM1","NUM2","NUM3","NUM4","NUM5",
             "NUM6","NUM7","NUM8","NUM9"
         };
+        private static readonly Regex VariableRegex = new Regex(@"\[(VAR|WAIT|~)\s+([^\]]+)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private bool _analyzeReferenceFiles = true;
 
-        public ValidationResult ValidateLines(string[] lines)
+
+        public void EnableReferenceFileAnalysis(bool enable)
+        {
+            _analyzeReferenceFiles = enable;
+        }
+
+        public ValidationResult ValidateLines(string[] lines, ReferenceFile referenceFile)
         {
             var result = new ValidationResult();
             if (lines == null)
@@ -79,7 +88,7 @@ namespace xyztext.Utils.Validation
                             continue;
                         }
 
-                        string method = inside.Split(new[] {' '}, 2)[0];
+                        string method = inside.Split(new[] { ' ' }, 2)[0];
                         if (!_validVarMethods.Contains(method))
                         {
                             result.Messages.Add(new ValidationMessage { LineIndex = i, IsError = true, Message = $"Unknown variable method '{method}'" });
@@ -140,11 +149,89 @@ namespace xyztext.Utils.Validation
                 }
             }
 
+            if (_analyzeReferenceFiles && referenceFile?.Lines.Length > 0)
+            {
+                ValidateAgainstReference(lines, referenceFile, result);
+            }
+
+
             if (result.ErrorLines.Any()) result.Status = ValidationStatus.Red;
             else if (result.WarningLines.Any()) result.Status = ValidationStatus.Yellow;
             else result.Status = ValidationStatus.Green;
 
             return result;
+        }
+
+        private void ValidateAgainstReference(string[] curentFileLines, ReferenceFile referenceFile, ValidationResult result)
+        {
+            if (referenceFile == null || !_analyzeReferenceFiles)
+            {
+                return;
+            }
+
+            if (curentFileLines.Length != referenceFile.Lines.Length)
+            {
+                result.Messages.Add(new ValidationMessage
+                {
+                    LineIndex = -1,
+                    IsError = true,
+                    Message = $"Line count mismatch: expected {referenceFile.Lines.Length}, got {curentFileLines.Length}"
+                });
+
+                result.ErrorLines.Add(-1);
+                return;
+            }
+
+
+            //variables check
+            for (int i = 0; i < curentFileLines.Length; i++)
+            {
+                var currentVariables = ExtractVariableSignature(curentFileLines[i]);
+                var referenceVariables = ExtractVariableSignature(referenceFile.Lines[i]);
+
+                foreach (var variable in currentVariables)
+                {
+                    if (!referenceVariables.Contains(variable, StringComparer.OrdinalIgnoreCase))
+                    {
+                        result.Messages.Add(new ValidationMessage { LineIndex = i, IsError = false, Message = $"Variable '{variable}' not found in reference file" });
+                        result.WarningLines.Add(i);
+                    }
+                }
+
+                foreach (var refVar in referenceVariables)
+                {
+                    if (!currentVariables.Contains(refVar, StringComparer.OrdinalIgnoreCase))
+                    {
+                        result.Messages.Add(new ValidationMessage
+                        {
+                            LineIndex = i,
+                            IsError = false,
+                            Message = $"Reference variable '{refVar}' missing in current file"
+                        });
+                        result.WarningLines.Add(i);
+                    }
+                }
+            }
+        }
+
+        public static string[] ExtractVariableSignature(string line)
+        {
+            if (string.IsNullOrEmpty(line))
+                return Array.Empty<string>();
+
+            var matches = VariableRegex.Matches(line);
+            var variables = new List<string>();
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count >= 3)
+                {
+                    string fullBlock = match.Value.Trim();
+                    variables.Add(fullBlock);
+                }
+            }
+
+            return variables.ToArray();
         }
     }
 }
